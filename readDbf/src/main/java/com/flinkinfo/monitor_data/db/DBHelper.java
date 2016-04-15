@@ -1,9 +1,6 @@
 package com.flinkinfo.monitor_data.db;
 
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,36 +11,30 @@ import java.sql.SQLException;
  *
  * @author jimmy
  */
-@Component
 public class DBHelper
 {
     //连接url
-    @Value("${jdbc.url}")
     private String url;
 
     //驱动程序
-    @Value("${jdbc.driverClassName}")
-    private String name;
+    private String name = "com.mysql.jdbc.Driver";
 
     //用户名
-    @Value("${jdbc.username}")
     private String user;
 
     //用户密码
-    @Value("${jdbc.password}")
     private String password;
 
     private Connection conn;
 
     private PreparedStatement pst;
 
-//    public DBHelper(String ip, String user, String password)
-//    {
-//        this.url = "jdbc:mysql://" + ip + ":3306/test?useUnicode=true&amp;characterEncoding=UTF-8";
-//        this.user = user;
-//        this.password = password;
-//        init();
-//    }
+    public DBHelper(String ip, String user, String password)
+    {
+        this.url = "jdbc:mysql://" + ip + ":3306/test?useUnicode=true&amp;characterEncoding=UTF-8";
+        this.user = user;
+        this.password = password;
+    }
 
     /**
      * 初始化

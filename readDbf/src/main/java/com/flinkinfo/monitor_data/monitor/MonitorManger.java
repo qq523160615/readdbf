@@ -11,14 +11,20 @@ public class MonitorManger
 {
     private FileAlterationMonitor monitor;
 
-    public MonitorManger(String rootDir)
+    private FileAlterationObserver observer;
+
+    private long interval;
+
+    public MonitorManger(String rootDir, long interval)
     {
         // 轮询间隔 5 毫秒
-        long interval = 5l;
-        FileAlterationObserver observer = new FileAlterationObserver(
-                rootDir, null,
-                null);
-        observer.addListener(new MonitorListen());
+        this.interval = interval;
+        observer = new FileAlterationObserver(rootDir, null, null);
+    }
+
+    public void setListener(MonitorListen monitorListen)
+    {
+        observer.addListener(monitorListen);
         monitor = new FileAlterationMonitor(interval, observer);
     }
 

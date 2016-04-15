@@ -2,7 +2,6 @@ package com.flinkinfo.monitor_data.dbf;
 
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
-import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -14,7 +13,6 @@ import java.util.List;
  *
  * @author jimmy
  */
-@Component
 public class Rwdbf
 {
     //列名
@@ -22,11 +20,6 @@ public class Rwdbf
 
     //行数据
     private List<Object[]> records;
-
-//    public Rwdbf(String path)
-//    {
-//        init(path);
-//    }
 
     /**
      * 初始化数据

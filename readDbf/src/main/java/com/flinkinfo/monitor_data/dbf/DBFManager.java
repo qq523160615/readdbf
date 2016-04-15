@@ -1,8 +1,6 @@
 package com.flinkinfo.monitor_data.dbf;
 
 import com.flinkinfo.monitor_data.db.DbOperationManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -11,21 +9,19 @@ import java.util.List;
  *
  * @author jimmy
  */
-@Component
 public class DBFManager
 {
-    @Autowired
     DbOperationManager dbOperationManager;
 
-    @Autowired
     Rwdbf rwdbf;
 
     private String table;
 
-//    public DBFManager(String ip, String user, String password)
-//    {
-//        dbOperationManager = new DbOperationManager(ip, user, password);
-//    }
+    public DBFManager(DbOperationManager dbOperationManager, Rwdbf rwdbf)
+    {
+        this.dbOperationManager = dbOperationManager;
+        this.rwdbf = rwdbf;
+    }
 
     public void init(String path, String table)
     {

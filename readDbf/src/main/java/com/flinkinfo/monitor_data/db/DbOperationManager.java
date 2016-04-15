@@ -1,8 +1,6 @@
 package com.flinkinfo.monitor_data.db;
 
 import com.flinkinfo.monitor_data.util.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -12,16 +10,15 @@ import java.util.List;
  *
  * @author jimmy
  */
-@Component
 public class DbOperationManager
 {
-    @Autowired
+
     private DBHelper dbHelper;
 
-//    public DbOperationManager(String ip, String user, String password)
-//    {
-//        dbHelper = new DBHelper(ip, user, password);
-//    }
+    public DbOperationManager(DBHelper dbHelper)
+    {
+        this.dbHelper = dbHelper;
+    }
 
     /**
      * 创建表
