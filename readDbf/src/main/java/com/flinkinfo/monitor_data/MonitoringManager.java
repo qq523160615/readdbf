@@ -17,7 +17,7 @@ public class MonitoringManager
     public static void main(String[] args) throws Exception
     {
         // 监控目录
-        String rootDir = "/Users/jimmy/jpa/";
+        String rootDir = "/tmp/";
         MonitorManger monitorManger = new MonitorManger(rootDir);
         monitorManger.start();
     }

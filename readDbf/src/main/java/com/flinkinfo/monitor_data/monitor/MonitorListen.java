@@ -10,13 +10,6 @@ import java.io.File;
 
 public class MonitorListen extends FileAlterationListenerAdaptor
 {
-
-
-//    public MonitorListen(String ip, String user, String password)
-//    {
-//        dbfManager = new DBFManager(ip, user, password);
-//    }
-
     @Override
     public void onFileCreate(File file)
     {

@@ -23,11 +23,6 @@ public class Rwdbf
     //行数据
     private List<Object[]> records;
 
-//    public Rwdbf(String path)
-//    {
-//        init(path);
-//    }
-
     /**
      * 初始化数据
      *

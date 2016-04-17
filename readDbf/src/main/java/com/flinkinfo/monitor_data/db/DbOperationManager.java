@@ -18,10 +18,6 @@ public class DbOperationManager
     @Autowired
     private DBHelper dbHelper;
 
-//    public DbOperationManager(String ip, String user, String password)
-//    {
-//        dbHelper = new DBHelper(ip, user, password);
-//    }
 
     /**
      * 创建表
