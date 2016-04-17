@@ -51,14 +51,13 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     {
         try
         {
-            String table = file.getName().substring(0, file.getName().indexOf("."));
             String fileName = file.getAbsolutePath();
             if (fileName.endsWith(".DBF") || fileName.endsWith(".dbf"))
             {
+                String table = file.getName().substring(0, file.getName().indexOf("."));
                 dbfFileManager.writeToDb(fileName, dbHelper, table);
                 dbfFileManager.closeInputStream();
             }
-
         } catch (IOException e)
         {
             e.printStackTrace();
