@@ -12,6 +12,8 @@ import java.sql.SQLException;
  */
 public class DBHelper
 {
+    private static DBHelper dbHelper = null;
+
     //驱动程序
     private String name = "com.mysql.jdbc.Driver";
 
@@ -19,17 +21,27 @@ public class DBHelper
 
     private PreparedStatement pst;
 
-    public DBHelper(String ip,String user,String password)
+    private DBHelper(String ip, String user, String password)
     {
-        init(ip,user,password);
+        init(ip, user, password);
+    }
+
+    public static DBHelper getInstance(String ip, String user, String password)
+    {
+        if (dbHelper == null)
+        {
+            dbHelper = new DBHelper(ip, user, password);
+        }
+
+        return dbHelper;
     }
 
     /**
      * 初始化
      */
-    private void init(String ip,String user,String password)
+    private void init(String ip, String user, String password)
     {
-        String url = "jdbc:mysql://" + ip  + ":3306/test?useUnicode=true&amp;characterEncoding=UTF-8";
+        String url = "jdbc:mysql://" + ip + ":3306/test?useUnicode=true&amp;characterEncoding=UTF-8&useSSL=true";
         try
         {
             //指定连接类型

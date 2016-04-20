@@ -1,26 +1,49 @@
 package com.flinkinfo.monitor_data;
 
-import com.flinkinfo.monitor_data.dbf.Rwdbf;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.List;
-
 /**
- *
  */
-public class Test
+public class SSClass
 {
-    public static void main(String[] args) throws Exception
+    static
     {
-        String path = "/Users/jimmy/Downloads/aaa.DBF";
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-        Rwdbf rwdbf = applicationContext.getBean(Rwdbf.class);
-        rwdbf.init(path);
-        List<String> columns = rwdbf.getColumns();
-        for (String column : columns)
-        {
-            System.out.println(column);
-        }
+        System.out.println("SSClass");
+    }
+}
+
+public class SuperClass extends SSClass
+{
+    static
+    {
+        System.out.println("SuperClass init!");
+    }
+
+    public static int value = 123;
+
+    public SuperClass()
+    {
+        System.out.println("init SuperClass");
+    }
+}
+
+public class SubClass extends SuperClass
+{
+    static
+    {
+        System.out.println("SubClass init");
+    }
+
+    static int a;
+
+    public SubClass()
+    {
+        System.out.println("init SubClass");
+    }
+}
+
+public class NotInitialization
+{
+    public static void main(String[] args)
+    {
+        System.out.println(SubClass.value);
     }
 }

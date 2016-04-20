@@ -65,6 +65,7 @@ public class DBFFileManager
             records.add(rowValues);
         }
 
+
         //dbf设置属性
         dbfFile.setColumns(columns);
         dbfFile.setFiledCount(fieldsCount);

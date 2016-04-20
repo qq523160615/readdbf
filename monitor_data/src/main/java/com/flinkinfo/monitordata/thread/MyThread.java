@@ -37,7 +37,7 @@ public class MyThread extends Thread
             DBFFileManager dbfFileManager = new DBFFileManager();
 
             //设置连接数据库地址,账号和密码
-            DBHelper dbHelper = new DBHelper(ip, user, password);
+            DBHelper dbHelper = DBHelper.getInstance(ip, user, password);
 
             //设置监控目录
             MonitorManger monitorManger = new MonitorManger(path);
@@ -51,7 +51,8 @@ public class MyThread extends Thread
             //开启监控
             monitorManger.start();
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
