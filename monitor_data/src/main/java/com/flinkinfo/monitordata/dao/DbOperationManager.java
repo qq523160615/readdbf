@@ -4,6 +4,7 @@ package com.flinkinfo.monitordata.dao;
 import com.flinkinfo.monitordata.util.StringUtil;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,9 +37,10 @@ public class DbOperationManager
             if (i != columns.size() - 1)
             {
                 colum = colum + columns.get(i) + " varchar(50),";
-            } else
+            }
+            else
             {
-                colum = colum + columns.get(i) + " varchar(50),PRIMARY KEY  (`id`))";
+                colum = colum + columns.get(i) + " varchar(50),time varchar(50),PRIMARY KEY  (`id`))";
             }
         }
 
@@ -62,7 +64,8 @@ public class DbOperationManager
             if (i != rowValues.length - 1)
             {
                 value = value + rowValues[i] + ",";
-            } else
+            }
+            else
             {
                 value = value + rowValues[i];
             }
@@ -70,7 +73,7 @@ public class DbOperationManager
         }
         value = StringUtil.replaceSpace(value);
         value = StringUtil.addChar(value);
-        insertSql = insertSql + value + ")";
+        insertSql = insertSql + value + ",'" + new Date() + "')";
 
         System.out.println(insertSql);
         dbHelper.execute(insertSql);

@@ -115,7 +115,7 @@ public class DBFFileManager
         DbOperationManager dbOperationManager = new DbOperationManager(dbHelper);
 
         //删除表
-        dbOperationManager.delete(talbe);
+//        dbOperationManager.delete(talbe);
 
         //创建表
         dbOperationManager.create(talbe, dbfFile.getColumns());
