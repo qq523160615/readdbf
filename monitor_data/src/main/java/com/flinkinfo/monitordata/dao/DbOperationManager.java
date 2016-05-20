@@ -71,7 +71,7 @@ public class DbOperationManager
             }
             value = StringUtil.cutSpace(value);
         }
-        value = StringUtil.replaceSpace(value);
+        value = StringUtil.replaceSpace(value,rowValues.length);
         value = StringUtil.addChar(value);
         insertSql = insertSql + value + ",'" + new Date() + "')";
 

@@ -45,7 +45,7 @@ public class StringUtil
         return result;
     }
 
-    public static String replaceSpace(String s)
+    public static String replaceSpace(String s,int length)
     {
         String[] strings = s.split(",");
         List<Integer> positions = new ArrayList<Integer>();
@@ -72,6 +72,14 @@ public class StringUtil
             else
             {
                 result = result + strings[i];
+            }
+        }
+
+        if(strings.length < length)
+        {
+            for (int i = 0; i < length - strings.length; i++)
+            {
+                result = result + ",null";
             }
         }
 
