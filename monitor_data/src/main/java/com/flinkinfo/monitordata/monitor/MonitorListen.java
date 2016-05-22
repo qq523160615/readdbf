@@ -1,6 +1,7 @@
 package com.flinkinfo.monitordata.monitor;
 
 import com.flinkinfo.monitordata.dbf.DBFFileManager;
+import com.flinkinfo.monitordata.util.LoggerUtil;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,15 +50,17 @@ public class MonitorListen extends FileAlterationListenerAdaptor
             if (fileName.endsWith(".DBF") || fileName.endsWith(".dbf"))
             {
                 String table = file.getName().substring(0, file.getName().indexOf("."));
-                dbfFileManager.writeToDb(fileName,table);
+                dbfFileManager.writeToDb(fileName, table);
                 dbfFileManager.closeInputStream();
             }
         } catch (IOException e)
         {
             e.printStackTrace();
+            LoggerUtil.error(e.getMessage());
         } catch (SQLException e)
         {
             e.printStackTrace();
+            LoggerUtil.error(e.getMessage());
         }
     }
 }

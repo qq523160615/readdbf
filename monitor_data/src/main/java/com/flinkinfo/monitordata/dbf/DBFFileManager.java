@@ -106,12 +106,12 @@ public class DBFFileManager
     /**
      * 将dbf文件数据写入数据库中
      *
-     * @param path     dbf文件地址
-     * @param talbe    表名
+     * @param path  dbf文件地址
+     * @param talbe 表名
      * @throws IOException
      * @throws SQLException
      */
-    public void writeToDb(String path,String talbe) throws IOException, SQLException
+    public void writeToDb(String path, String talbe) throws IOException, SQLException
     {
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
@@ -128,14 +128,7 @@ public class DBFFileManager
         //将数据插入表中
         for (Object[] record : records)
         {
-            try
-            {
-                dbOperationManager.insert(talbe, record);
-            }
-            catch (Exception e)
-            {
-                System.out.println(e.getMessage());
-            }
+            dbOperationManager.insert(talbe, record);
         }
 
         //关闭数据库

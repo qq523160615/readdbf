@@ -1,6 +1,7 @@
 package com.flinkinfo.monitordata.dao;
 
 
+import com.flinkinfo.monitordata.util.LoggerUtil;
 import com.flinkinfo.monitordata.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,8 +36,7 @@ public class DbOperationManager
             if (i != columns.size() - 1)
             {
                 colum = colum + columns.get(i) + " varchar(50),";
-            }
-            else
+            } else
             {
                 colum = colum + columns.get(i) + " varchar(50),time varchar(50),PRIMARY KEY  (`id`))";
             }
@@ -44,6 +44,7 @@ public class DbOperationManager
 
         createSql = createSql + colum;
         System.out.println(createSql);
+        LoggerUtil.info(createSql);
         dbHelper.execute(createSql);
     }
 
@@ -55,32 +56,27 @@ public class DbOperationManager
      */
     public void insert(String table, Object[] rowValues) throws SQLException
     {
-        try
+        String insertSql = "insert into " + table + " values(null,";
+        String value = "";
+        for (int i = 0; i < rowValues.length; i++)
         {
-            String insertSql = "insert into " + table + " values(null,";
-            String value = "";
-            for (int i = 0; i < rowValues.length; i++)
+            if (i != rowValues.length - 1)
             {
-                if (i != rowValues.length - 1)
-                {
-                    value = value + rowValues[i] + ",";
-                } else
-                {
-                    value = value + rowValues[i];
-                }
-                value = StringUtil.cutSpace(value);
+                value = value + rowValues[i] + ",";
+            } else
+            {
+                value = value + rowValues[i];
             }
-            value = StringUtil.replaceSpace(value, rowValues.length);
-            value = StringUtil.addChar(value);
-            insertSql = insertSql + value + ",'" + new Date() + "')";
+            value = StringUtil.cutSpace(value);
+        }
+        value = StringUtil.replaceSpace(value, rowValues.length);
+        value = StringUtil.addChar(value);
+        insertSql = insertSql + value + ",'" + new Date() + "')";
 
-            System.out.println(insertSql);
-            dbHelper.execute(insertSql);
-        }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-        }
+        LoggerUtil.info(insertSql);
+        System.out.println(insertSql);
+        dbHelper.execute(insertSql);
+
     }
 
     /**
