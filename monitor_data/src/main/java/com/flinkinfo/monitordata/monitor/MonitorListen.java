@@ -1,8 +1,9 @@
 package com.flinkinfo.monitordata.monitor;
 
-import com.flinkinfo.monitordata.dao.DBHelper;
 import com.flinkinfo.monitordata.dbf.DBFFileManager;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,19 +14,12 @@ import java.sql.SQLException;
  *
  * @author jimmy
  */
+@Component
 public class MonitorListen extends FileAlterationListenerAdaptor
 {
     //DBF文件管理类
+    @Autowired
     private DBFFileManager dbfFileManager;
-
-    //数据库帮助类
-    private DBHelper dbHelper;
-
-    public MonitorListen(DBFFileManager dbfFileManager, DBHelper dbHelper)
-    {
-        this.dbfFileManager = dbfFileManager;
-        this.dbHelper = dbHelper;
-    }
 
     @Override
     public void onFileCreate(File file)
@@ -55,7 +49,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
             if (fileName.endsWith(".DBF") || fileName.endsWith(".dbf"))
             {
                 String table = file.getName().substring(0, file.getName().indexOf("."));
-                dbfFileManager.writeToDb(fileName, dbHelper, table);
+                dbfFileManager.writeToDb(fileName,table);
                 dbfFileManager.closeInputStream();
             }
         } catch (IOException e)

@@ -2,6 +2,8 @@ package com.flinkinfo.monitordata.main;
 
 
 import com.flinkinfo.monitordata.thread.MyThread;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Scanner;
 
@@ -14,23 +16,8 @@ public class App
 {
     public static void main(String[] args)
     {
-        System.out.println("DBF文件监控程序");
-        System.out.println("---------------------------");
-        Scanner input = new Scanner(System.in);
-        System.out.println("请输入一个数据库ip：");
-        String ip = input.nextLine();
-        System.out.println("请输入一个数据库用户名：");
-        String user = input.nextLine();
-        System.out.println("请输入一个数据库密码：");
-        String password = input.nextLine();
-        System.out.println("请输入一个监控目录：");
-        String paths = input.nextLine();
-
-        String[] pathArray = paths.split(",");
-
-        for (String path : pathArray)
-        {
-            new MyThread(ip, user, password, path).start();
-        }
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        MyThread myThread = context.getBean(MyThread.class);
+        myThread.start();
     }
 }

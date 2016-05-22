@@ -1,5 +1,9 @@
 package com.flinkinfo.monitordata.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,50 +14,15 @@ import java.sql.SQLException;
  *
  * @author jimmy
  */
+@Component
 public class DBHelper
 {
-    private static DBHelper dbHelper = null;
+    private PreparedStatement pst;   //驱动程序
 
-    //驱动程序
-    private String name = "com.mysql.jdbc.Driver";
+    @Autowired
+    private DataSource dataSource;
 
-    private Connection conn;
-
-    private PreparedStatement pst;
-
-    private DBHelper(String ip, String user, String password)
-    {
-        init(ip, user, password);
-    }
-
-    public static DBHelper getInstance(String ip, String user, String password)
-    {
-        if (dbHelper == null)
-        {
-            dbHelper = new DBHelper(ip, user, password);
-        }
-
-        return dbHelper;
-    }
-
-    /**
-     * 初始化
-     */
-    private void init(String ip, String user, String password)
-    {
-        String url = "jdbc:mysql://" + ip + ":3306/test?useUnicode=true&amp;characterEncoding=UTF-8&useSSL=true";
-        try
-        {
-            //指定连接类型
-            Class.forName(name);
-            //获取连接
-            conn = DriverManager.getConnection(url, user, password);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
+    private static Connection connection;
 
     /**
      * 执行sql语句
@@ -63,7 +32,11 @@ public class DBHelper
      */
     public void execute(String sql) throws SQLException
     {
-        pst = conn.prepareCall(sql);
+        if(connection == null)
+        {
+            connection = dataSource.getConnection();
+        }
+        pst = connection.prepareCall(sql);
         pst.execute();
     }
 
@@ -74,7 +47,7 @@ public class DBHelper
     {
         try
         {
-            this.conn.close();
+            dataSource.getConnection().close();
             this.pst.close();
         }
         catch (SQLException e)

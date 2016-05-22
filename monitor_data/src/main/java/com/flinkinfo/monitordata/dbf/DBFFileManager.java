@@ -5,6 +5,8 @@ import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,10 +22,14 @@ import java.util.List;
  *
  * @author jimmy
  */
+@Component
 public class DBFFileManager
 {
     //输入流
     private InputStream fis;
+
+    @Autowired
+    DbOperationManager dbOperationManager;
 
     /**
      * 获得dbf文件属性
@@ -101,18 +107,14 @@ public class DBFFileManager
      * 将dbf文件数据写入数据库中
      *
      * @param path     dbf文件地址
-     * @param dbHelper 数据库帮助类
      * @param talbe    表名
      * @throws IOException
      * @throws SQLException
      */
-    public void writeToDb(String path, DBHelper dbHelper, String talbe) throws IOException, SQLException
+    public void writeToDb(String path,String talbe) throws IOException, SQLException
     {
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
-
-        //数据库操作管理
-        DbOperationManager dbOperationManager = new DbOperationManager(dbHelper);
 
         //删除表
 //        dbOperationManager.delete(talbe);
@@ -126,7 +128,14 @@ public class DBFFileManager
         //将数据插入表中
         for (Object[] record : records)
         {
-            dbOperationManager.insert(talbe, record);
+            try
+            {
+                dbOperationManager.insert(talbe, record);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
         }
 
         //关闭数据库

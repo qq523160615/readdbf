@@ -2,6 +2,8 @@ package com.flinkinfo.monitordata.dao;
 
 
 import com.flinkinfo.monitordata.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -12,15 +14,11 @@ import java.util.List;
  *
  * @author jimmy
  */
+@Component
 public class DbOperationManager
 {
-
+    @Autowired
     private DBHelper dbHelper;
-
-    public DbOperationManager(DBHelper dbHelper)
-    {
-        this.dbHelper = dbHelper;
-    }
 
     /**
      * 创建表
@@ -57,26 +55,32 @@ public class DbOperationManager
      */
     public void insert(String table, Object[] rowValues) throws SQLException
     {
-        String insertSql = "insert into " + table + " values(null,";
-        String value = "";
-        for (int i = 0; i < rowValues.length; i++)
+        try
         {
-            if (i != rowValues.length - 1)
+            String insertSql = "insert into " + table + " values(null,";
+            String value = "";
+            for (int i = 0; i < rowValues.length; i++)
             {
-                value = value + rowValues[i] + ",";
+                if (i != rowValues.length - 1)
+                {
+                    value = value + rowValues[i] + ",";
+                } else
+                {
+                    value = value + rowValues[i];
+                }
+                value = StringUtil.cutSpace(value);
             }
-            else
-            {
-                value = value + rowValues[i];
-            }
-            value = StringUtil.cutSpace(value);
-        }
-        value = StringUtil.replaceSpace(value,rowValues.length);
-        value = StringUtil.addChar(value);
-        insertSql = insertSql + value + ",'" + new Date() + "')";
+            value = StringUtil.replaceSpace(value, rowValues.length);
+            value = StringUtil.addChar(value);
+            insertSql = insertSql + value + ",'" + new Date() + "')";
 
-        System.out.println(insertSql);
-        dbHelper.execute(insertSql);
+            System.out.println(insertSql);
+            dbHelper.execute(insertSql);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
