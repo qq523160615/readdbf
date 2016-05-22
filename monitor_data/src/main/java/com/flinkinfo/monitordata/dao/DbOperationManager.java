@@ -6,7 +6,10 @@ import com.flinkinfo.monitordata.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 import java.sql.SQLException;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +24,8 @@ public class DbOperationManager
     @Autowired
     private DBHelper dbHelper;
 
+    private String date;
+
     /**
      * 创建表
      *
@@ -29,6 +34,8 @@ public class DbOperationManager
      */
     public void create(String table, List<String> columns) throws SQLException
     {
+        SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        date = tempDate.format(new Date());
         String createSql = "create table if not exists " + table + "(id int(5) NOT NULL auto_increment,";
         String colum = "";
         for (int i = 0; i < columns.size(); i++)
@@ -38,7 +45,7 @@ public class DbOperationManager
                 colum = colum + columns.get(i) + " varchar(50),";
             } else
             {
-                colum = colum + columns.get(i) + " varchar(50),time varchar(50),PRIMARY KEY  (`id`))";
+                colum = colum + columns.get(i) + " varchar(50),update_ime date,PRIMARY KEY  (`id`))";
             }
         }
 
@@ -54,7 +61,7 @@ public class DbOperationManager
      * @param table     表名
      * @param rowValues 行数据
      */
-    public void insert(String table, Object[] rowValues) throws SQLException
+    public void insert(String table, Object[] rowValues,String time) throws SQLException
     {
         String insertSql = "insert into " + table + " values(null,";
         String value = "";
@@ -71,10 +78,9 @@ public class DbOperationManager
         }
         value = StringUtil.replaceSpace(value, rowValues.length);
         value = StringUtil.addChar(value);
-        insertSql = insertSql + value + ",'" + new Date() + "')";
-
-        LoggerUtil.info(insertSql);
+        insertSql = insertSql + value + ",'" + time + "')";
         System.out.println(insertSql);
+        LoggerUtil.info(insertSql);
         dbHelper.execute(insertSql);
 
     }

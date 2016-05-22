@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 /**
  * 监控监听类
@@ -26,14 +27,19 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     public void onFileCreate(File file)
     {
         System.out.println("[新增]:" + file.getAbsolutePath());
-        writeToDb(file);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(file.lastModified());
+        writeToDb(file,cal.getTime().toLocaleString());
     }
 
     @Override
     public void onFileChange(File file)
     {
         System.out.println("[修改]:" + file.getAbsolutePath());
-        writeToDb(file);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(file.lastModified());
+        System.out.println(cal.getTime().toLocaleString());
+        writeToDb(file,cal.getTime().toLocaleString());
     }
 
     @Override
@@ -42,7 +48,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
         System.out.println("[删除]:" + file.getAbsolutePath());
     }
 
-    private void writeToDb(File file)
+    private void writeToDb(File file,String time)
     {
         try
         {
@@ -50,7 +56,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
             if (fileName.endsWith(".DBF") || fileName.endsWith(".dbf"))
             {
                 String table = file.getName().substring(0, file.getName().indexOf("."));
-                dbfFileManager.writeToDb(fileName, table);
+                dbfFileManager.writeToDb(fileName, table,time);
                 dbfFileManager.closeInputStream();
             }
         } catch (IOException e)

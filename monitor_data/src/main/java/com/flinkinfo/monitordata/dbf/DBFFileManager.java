@@ -1,7 +1,7 @@
 package com.flinkinfo.monitordata.dbf;
 
-import com.flinkinfo.monitordata.dao.DBHelper;
 import com.flinkinfo.monitordata.dao.DbOperationManager;
+import com.flinkinfo.monitordata.util.JsonUtil;
 import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
@@ -107,29 +107,67 @@ public class DBFFileManager
      * 将dbf文件数据写入数据库中
      *
      * @param path  dbf文件地址
-     * @param talbe 表名
+     * @param table 表名
      * @throws IOException
      * @throws SQLException
      */
-    public void writeToDb(String path, String talbe) throws IOException, SQLException
+    public void writeToDb(String path, String table, String time) throws IOException, SQLException
     {
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-//        dbOperationManager.delete(talbe);
+//        dbOperationManager.delete(table);
 
         //创建表
-        dbOperationManager.create(talbe, dbfFile.getColumns());
+        dbOperationManager.create(table, dbfFile.getColumns());
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
 
+        List<String> columns = dbfFile.getColumns();
+        String json = "{" +
+                "\"RECORDS\":[";
+
         //将数据插入表中
-        for (Object[] record : records)
+        for (int i = 0; i < records.size(); i++)
         {
-            dbOperationManager.insert(talbe, record);
+            Object[] record = records.get(i);
+            dbOperationManager.insert(table, record,time);
+            if (i == records.size() - 1)
+            {
+                System.out.println(".");
+                System.out.println("插入完毕...\n插入总行数为:" + records.size());
+            }
+
+
+            json = json + "{";
+            String keyValue = "";
+            for (int j = 0; j < columns.size(); j++)
+            {
+                if (j != columns.size() - 1)
+                {
+                    keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + record[j] + "\",";
+                } else
+                {
+                    keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + record[j] + "\"";
+                }
+            }
+
+            if (i == records.size() - 1)
+            {
+                json = json + keyValue + "}";
+            }
+            else
+            {
+                json = json + keyValue + "},";
+            }
+
         }
+        json = json + "]}";
+        json = json.replace(" ","");
+        JsonUtil.writeJosnFile("/tmp/",json, table + " " + time);
+        System.out.println(json);
 
         //关闭数据库
 //        dbHelper.close();
