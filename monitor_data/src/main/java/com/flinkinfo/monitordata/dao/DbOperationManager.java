@@ -1,6 +1,7 @@
 package com.flinkinfo.monitordata.dao;
 
 
+import com.flinkinfo.monitordata.util.DateUtil;
 import com.flinkinfo.monitordata.util.LoggerUtil;
 import com.flinkinfo.monitordata.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,10 @@ public class DbOperationManager
             if (i != columns.size() - 1)
             {
                 colum = colum + columns.get(i) + " varchar(50),";
-            } else
+            }
+            else
             {
-                colum = colum + columns.get(i) + " varchar(50),update_ime date,PRIMARY KEY  (`id`))";
+                colum = colum + columns.get(i) + " varchar(50),update_ime datetime,PRIMARY KEY  (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             }
         }
 
@@ -61,7 +63,7 @@ public class DbOperationManager
      * @param table     表名
      * @param rowValues 行数据
      */
-    public void insert(String table, Object[] rowValues,String time) throws SQLException
+    public void insert(String table, Object[] rowValues, Date time) throws SQLException
     {
         String insertSql = "insert into " + table + " values(null,";
         String value = "";
@@ -70,7 +72,8 @@ public class DbOperationManager
             if (i != rowValues.length - 1)
             {
                 value = value + rowValues[i] + ",";
-            } else
+            }
+            else
             {
                 value = value + rowValues[i];
             }
@@ -78,7 +81,7 @@ public class DbOperationManager
         }
         value = StringUtil.replaceSpace(value, rowValues.length);
         value = StringUtil.addChar(value);
-        insertSql = insertSql + value + ",'" + time + "')";
+        insertSql = insertSql + value + ",'" + DateUtil.changToYYYY_MM_DD_HH_MM_SS(time) + "')";
         System.out.println(insertSql);
         LoggerUtil.info(insertSql);
         dbHelper.execute(insertSql);

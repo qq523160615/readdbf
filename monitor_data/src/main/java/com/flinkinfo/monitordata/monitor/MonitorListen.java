@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 监控监听类
@@ -26,29 +27,33 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     @Override
     public void onFileCreate(File file)
     {
+        LoggerUtil.info("[新增]:" + file.getAbsolutePath());
         System.out.println("[新增]:" + file.getAbsolutePath());
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(file.lastModified());
-        writeToDb(file,cal.getTime().toLocaleString());
+        System.out.println(cal.getTime().toLocaleString());
+        writeToDb(file,cal.getTime());
     }
 
     @Override
     public void onFileChange(File file)
     {
+        LoggerUtil.info("[修改]:" + file.getAbsolutePath());
         System.out.println("[修改]:" + file.getAbsolutePath());
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(file.lastModified());
         System.out.println(cal.getTime().toLocaleString());
-        writeToDb(file,cal.getTime().toLocaleString());
+        writeToDb(file,cal.getTime());
     }
 
     @Override
     public void onFileDelete(File file)
     {
+        LoggerUtil.info("[删除]:" + file.getAbsolutePath());
         System.out.println("[删除]:" + file.getAbsolutePath());
     }
 
-    private void writeToDb(File file,String time)
+    private void writeToDb(File file,Date time)
     {
         try
         {
