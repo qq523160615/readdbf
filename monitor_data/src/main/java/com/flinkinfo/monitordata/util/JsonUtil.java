@@ -19,7 +19,7 @@ public class JsonUtil
      * @param date
      * @throws IOException
      */
-    public static void writeJosnFile(String path,String json,String fileName,Date date) throws IOException
+    public static void writeJosnFile(String path,String json,String fileName,Date date,int size) throws IOException
     {
         //时间日期目录 例:20160522
         String path1 = path + DateUtil.changeToYYYYMMDD(date);
@@ -40,7 +40,7 @@ public class JsonUtil
         }
 
         //在文件目录下建立json文件以时间为名 例:031545
-        File file = new File(path2,DateUtil.changeToHHMMSS(date) + ".json");
+        File file = new File(path2,DateUtil.changeToHHMMSS(date) +"(" + size + ")" + ".json");
         file.createNewFile();
         byte[] b = json.getBytes();
         FileOutputStream fileOutputStream = new FileOutputStream(file);

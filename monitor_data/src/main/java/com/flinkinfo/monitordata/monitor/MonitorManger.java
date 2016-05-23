@@ -25,6 +25,7 @@ public class MonitorManger
 
     public void setMonitorListen(MonitorListen monitorListen)
     {
+        System.out.println("监控目录:" + rootDir);
         if (observer == null)
         {
             observer = new FileAlterationObserver(rootDir);

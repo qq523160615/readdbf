@@ -123,6 +123,7 @@ public class DBFFileManager
 
         //删除表
 //        dbOperationManager.delete(table);
+        dbOperationManager.truncate(table);
 
         //创建表
         dbOperationManager.create(table, dbfFile.getColumns());
@@ -138,7 +139,7 @@ public class DBFFileManager
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
-            dbOperationManager.insert(table, record,time);
+            dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
                 System.out.println(".");
@@ -163,16 +164,15 @@ public class DBFFileManager
             if (i == records.size() - 1)
             {
                 json = json + keyValue + "}";
-            }
-            else
+            } else
             {
                 json = json + keyValue + "},";
             }
 
         }
         json = json + "]}";
-        json = json.replace(" ","");
-        JsonUtil.writeJosnFile("/tmp/",json, table,time);
+        json = json.replace(" ", "");
+        JsonUtil.writeJosnFile(jsonPath, json, table, time,records.size());
         System.out.println(json);
 
         //关闭数据库

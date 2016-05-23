@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>appassembler-maven-plugin</artifactId>
-                <version>1.2</version>
+                <version>1.1.1</version>
 
                 <configuration>
                     <repositoryLayout>flat</repositoryLayout>

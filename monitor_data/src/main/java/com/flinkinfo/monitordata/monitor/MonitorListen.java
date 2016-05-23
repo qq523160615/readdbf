@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -29,10 +28,10 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     {
         LoggerUtil.info("[新增]:" + file.getAbsolutePath());
         System.out.println("[新增]:" + file.getAbsolutePath());
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(file.lastModified());
-        System.out.println(cal.getTime().toLocaleString());
-        writeToDb(file,cal.getTime());
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTimeInMillis(file.lastModified());
+//        System.out.println(cal.getTime().toLocaleString());
+        writeToDb(file,new Date());
     }
 
     @Override
@@ -40,10 +39,10 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     {
         LoggerUtil.info("[修改]:" + file.getAbsolutePath());
         System.out.println("[修改]:" + file.getAbsolutePath());
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(file.lastModified());
-        System.out.println(cal.getTime().toLocaleString());
-        writeToDb(file,cal.getTime());
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTimeInMillis(file.lastModified());
+//        System.out.println(cal.getTime().toLocaleString());
+        writeToDb(file,new Date());
     }
 
     @Override

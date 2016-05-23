@@ -44,8 +44,7 @@ public class DbOperationManager
             if (i != columns.size() - 1)
             {
                 colum = colum + columns.get(i) + " varchar(50),";
-            }
-            else
+            } else
             {
                 colum = colum + columns.get(i) + " varchar(50),update_ime datetime,PRIMARY KEY  (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             }
@@ -72,8 +71,7 @@ public class DbOperationManager
             if (i != rowValues.length - 1)
             {
                 value = value + rowValues[i] + ",";
-            }
-            else
+            } else
             {
                 value = value + rowValues[i];
             }
@@ -99,5 +97,18 @@ public class DbOperationManager
         String deleteSql = "drop table if exists " + table;
         System.out.println(deleteSql);
         dbHelper.execute(deleteSql);
+    }
+
+    /**
+     * 清空表
+     *
+     * @param table
+     * @throws SQLException
+     */
+    public void truncate(String table) throws SQLException
+    {
+        String truncateSql = "truncate table " + table;
+        System.out.println(truncateSql);
+        dbHelper.execute(truncateSql);
     }
 }
