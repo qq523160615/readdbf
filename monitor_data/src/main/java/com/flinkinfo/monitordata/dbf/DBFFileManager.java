@@ -6,6 +6,7 @@ import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -30,6 +31,9 @@ public class DBFFileManager
 
     @Autowired
     DbOperationManager dbOperationManager;
+
+    @Value("${json.dir}")
+    String jsonPath;
 
     /**
      * 获得dbf文件属性
@@ -166,7 +170,7 @@ public class DBFFileManager
         }
         json = json + "]}";
         json = json.replace(" ","");
-        JsonUtil.writeJosnFile("/tmp/",json, table + " " + time);
+        JsonUtil.writeJosnFile(jsonPath,json, table + " " + time);
         System.out.println(json);
 
         //关闭数据库
