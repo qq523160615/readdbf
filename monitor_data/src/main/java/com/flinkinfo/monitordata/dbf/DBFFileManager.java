@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -111,7 +112,7 @@ public class DBFFileManager
      * @throws IOException
      * @throws SQLException
      */
-    public void writeToDb(String path, String table, String time) throws IOException, SQLException
+    public void writeToDb(String path, String table, Date time) throws IOException, SQLException
     {
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
@@ -141,6 +142,7 @@ public class DBFFileManager
             }
 
 
+            //将数据转成json写入文件
             json = json + "{";
             String keyValue = "";
             for (int j = 0; j < columns.size(); j++)
@@ -166,7 +168,7 @@ public class DBFFileManager
         }
         json = json + "]}";
         json = json.replace(" ","");
-        JsonUtil.writeJosnFile("/tmp/",json, table + " " + time);
+        JsonUtil.writeJosnFile("/tmp/",json, table,time);
         System.out.println(json);
 
         //关闭数据库
