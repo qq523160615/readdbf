@@ -4,20 +4,24 @@ package com.flinkinfo.monitordata.thread;
 import com.flinkinfo.monitordata.monitor.MonitorListen;
 import com.flinkinfo.monitordata.monitor.MonitorManger;
 import com.flinkinfo.monitordata.util.LoggerUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * 线程
  */
-@Component
 public class MyThread extends Thread
 {
-    @Autowired
     MonitorManger monitorManger;
 
-    @Autowired
     MonitorListen monitorListen;
+
+    public MyThread()
+    {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        monitorManger = context.getBean(MonitorManger.class);
+        monitorListen = context.getBean(MonitorListen.class);
+    }
 
     @Override
     public void run()

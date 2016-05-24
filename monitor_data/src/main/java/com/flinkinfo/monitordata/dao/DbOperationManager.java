@@ -107,7 +107,7 @@ public class DbOperationManager
      */
     public void truncate(String table) throws SQLException
     {
-        String truncateSql = "truncate table " + table;
+        String truncateSql = "truncate table if exists " + table;
         System.out.println(truncateSql);
         dbHelper.execute(truncateSql);
     }
