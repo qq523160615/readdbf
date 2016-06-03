@@ -1,6 +1,8 @@
 package com.flinkinfo.monitordata.dbf;
 
 import com.flinkinfo.monitordata.dao.DbOperationManager;
+import com.flinkinfo.monitordata.http.HttpClient;
+import com.flinkinfo.monitordata.http.bean.RequestVO;
 import com.flinkinfo.monitordata.util.JsonUtil;
 import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFField;
@@ -14,9 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -35,6 +35,9 @@ public class DBFFileManager
 
     @Value("${json.dir}")
     String jsonPath;
+
+    @Autowired
+    HttpClient httpClient;
 
     /**
      * 获得dbf文件属性
@@ -116,14 +119,14 @@ public class DBFFileManager
      * @throws IOException
      * @throws SQLException
      */
-    public void writeToDb(String path, String table, Date time) throws IOException, SQLException
+    public void writeToDb(String path, String table, Date time) throws Exception
     {
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-//        dbOperationManager.delete(table);
-        dbOperationManager.truncate(table);
+        dbOperationManager.delete(table);
+//        dbOperationManager.truncate(table);
 
         //创建表
         dbOperationManager.create(table, dbfFile.getColumns());
@@ -132,8 +135,7 @@ public class DBFFileManager
         List<Object[]> records = dbfFile.getRecords();
 
         List<String> columns = dbfFile.getColumns();
-        String json = "{" +
-                "\"RECORDS\":[";
+        String json = "[";
 
         //将数据插入表中
         for (int i = 0; i < records.size(); i++)
@@ -173,6 +175,35 @@ public class DBFFileManager
         json = json + "]}";
         json = json.replace(" ", "");
         JsonUtil.writeJosnFile(jsonPath, json, table, time,records.size());
+        RequestVO requestVO = new RequestVO();
+        Map map = new HashMap<>();
+        switch (table)
+        {
+            case "NQXX":
+                requestVO.setServiceName("updateNQXX");
+                map.put("data",json);
+                requestVO.setParams(map);
+                break;
+
+            case "NQHQ":
+                requestVO.setServiceName("updateNQHQ");
+                map.put("data",json);
+                requestVO.setParams(map);
+                break;
+
+            case "NQXYXX":
+                requestVO.setServiceName("updateNQXYXX");
+                map.put("data",json);
+                requestVO.setParams(map);
+                break;
+
+            case "NQZSXX":
+                requestVO.setServiceName("updateNQZSXX");
+                map.put("data",json);
+                requestVO.setParams(map);
+                break;
+        }
+        httpClient.post(requestVO,"");
         System.out.println(json);
 
         //关闭数据库
