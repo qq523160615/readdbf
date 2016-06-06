@@ -31,7 +31,14 @@ public class MonitorListen extends FileAlterationListenerAdaptor
 //        Calendar cal = Calendar.getInstance();
 //        cal.setTimeInMillis(file.lastModified());
 //        System.out.println(cal.getTime().toLocaleString());
-        writeToDb(file,new Date());
+        try
+        {
+            writeToDb(file,new Date());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -42,7 +49,14 @@ public class MonitorListen extends FileAlterationListenerAdaptor
 //        Calendar cal = Calendar.getInstance();
 //        cal.setTimeInMillis(file.lastModified());
 //        System.out.println(cal.getTime().toLocaleString());
-        writeToDb(file,new Date());
+        try
+        {
+            writeToDb(file,new Date());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -52,7 +66,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
         System.out.println("[删除]:" + file.getAbsolutePath());
     }
 
-    private void writeToDb(File file,Date time)
+    private void writeToDb(File file,Date time) throws Exception
     {
         try
         {
