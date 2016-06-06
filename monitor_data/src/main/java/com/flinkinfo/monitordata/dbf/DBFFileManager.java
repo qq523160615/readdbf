@@ -203,7 +203,7 @@ public class DBFFileManager
                 requestVO.setParams(map);
                 break;
         }
-        httpClient.post(requestVO,"");
+//        httpClient.post(requestVO,"");
         System.out.println(json);
 
         //关闭数据库

@@ -39,6 +39,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
         LoggerUtil.info("[新增]:" + file.getAbsolutePath());
         System.out.println("[新增]:" + file.getAbsolutePath());
         threadPoolExecutor.execute(new WriteThread(file,new Date()));
+
     }
 
     @Override
@@ -47,6 +48,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
         LoggerUtil.info("[修改]:" + file.getAbsolutePath());
         System.out.println("[修改]:" + file.getAbsolutePath());
         threadPoolExecutor.execute(new WriteThread(file,new Date()));
+
     }
 
 
