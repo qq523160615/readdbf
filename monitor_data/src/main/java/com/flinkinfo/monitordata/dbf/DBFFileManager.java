@@ -125,11 +125,11 @@ public class DBFFileManager
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-        dbOperationManager.delete(table);
+//        dbOperationManager.delete(table);
 //        dbOperationManager.truncate(table);
 
         //创建表
-        dbOperationManager.create(table, dbfFile.getColumns());
+//        dbOperationManager.create(table, dbfFile.getColumns());
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
@@ -141,7 +141,7 @@ public class DBFFileManager
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
-            dbOperationManager.insert(table, record, time);
+//            dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
                 System.out.println(".");

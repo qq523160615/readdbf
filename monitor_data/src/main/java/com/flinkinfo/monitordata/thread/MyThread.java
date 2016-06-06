@@ -7,6 +7,10 @@ import com.flinkinfo.monitordata.util.LoggerUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * 线程
  */
@@ -21,6 +25,9 @@ public class MyThread extends Thread
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         monitorManger = context.getBean(MonitorManger.class);
         monitorListen = context.getBean(MonitorListen.class);
+        ThreadPoolExecutor threadPoolExecutor  = new ThreadPoolExecutor(2,4,3,
+                TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(3),new ThreadPoolExecutor.DiscardOldestPolicy());
+        monitorListen.setThreadPoolExecutor(threadPoolExecutor);
     }
 
     @Override
