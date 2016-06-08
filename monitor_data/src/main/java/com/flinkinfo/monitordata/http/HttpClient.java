@@ -7,6 +7,7 @@ import com.flinkinfo.monitordata.http.bean.ResponseVO;
 import com.squareup.okhttp.*;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -62,7 +63,34 @@ public class HttpClient
             throw new Exception("IOException");
         }
         return responseVO;
-
     }
 
+
+    /**
+     * 上传文件
+     *
+     * @param file     文件
+     * @param url      上传地址
+     * @param fileName 文件名
+     * @return
+     * @throws IOException
+     */
+    public ResponseVO postFile(File file, String url, String fileName) throws IOException
+    {
+        //设置上传格式
+        MediaType FILE_TYPE = MediaType.parse("multipart/form-data; charset=utf-8");
+
+        //上传文件
+        Request request = new Request.Builder()
+                .url(url + "?name=" + fileName)
+                .post(RequestBody.create(FILE_TYPE, file))
+                .build();
+
+        //返回数据
+        Response response = client.newCall(request).execute();
+        String result = response.body().string();
+        ResponseVO responseVO = JSON.parseObject(result, ResponseVO.class);
+
+        return responseVO;
+    }
 }

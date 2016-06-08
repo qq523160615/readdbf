@@ -31,6 +31,23 @@
             <scope>test</scope>
         </dependency>
 
+        <!--spring aop-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>4.2.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.7</version>
+        </dependency>
+
         <dependency>
             <groupId>com.linuxense</groupId>
             <artifactId>javadbf</artifactId>
@@ -60,6 +77,13 @@
             <version>${version.slf4j}</version>
         </dependency>
 
+        <!--spring mvc-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>4.2.4.RELEASE</version>
+        </dependency>
+
         <!--spring相关包-->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -85,6 +109,19 @@
             <artifactId>okhttp</artifactId>
             <version>2.7.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>4.2.4.RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -172,7 +209,7 @@
                         <configuration>
                             <repositoryLayout>flat</repositoryLayout>
                             <target>${project.build.directory}/wrapper</target>
-                            <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+                            <!--<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>-->
                             <useDaemonIdAsWrapperConfName>true</useDaemonIdAsWrapperConfName>
                             <daemons>
                                 <daemon>

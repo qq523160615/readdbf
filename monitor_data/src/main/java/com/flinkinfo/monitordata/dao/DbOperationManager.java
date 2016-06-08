@@ -80,8 +80,8 @@ public class DbOperationManager
         value = StringUtil.replaceSpace(value, rowValues.length);
         value = StringUtil.addChar(value);
         insertSql = insertSql + value + ",'" + DateUtil.changToYYYY_MM_DD_HH_MM_SS(time) + "')";
-        System.out.println(insertSql);
-        LoggerUtil.info(insertSql);
+//        System.out.println(insertSql);
+//        LoggerUtil.info(insertSql);
         dbHelper.execute(insertSql);
 
     }

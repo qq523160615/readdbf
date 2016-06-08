@@ -125,11 +125,11 @@ public class DBFFileManager
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-//        dbOperationManager.delete(table);
+        dbOperationManager.delete(table);
 //        dbOperationManager.truncate(table);
 
         //创建表
-//        dbOperationManager.create(table, dbfFile.getColumns());
+        dbOperationManager.create(table, dbfFile.getColumns());
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
@@ -141,7 +141,7 @@ public class DBFFileManager
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
-//            dbOperationManager.insert(table, record, time);
+            dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
                 System.out.println(".");
@@ -154,12 +154,27 @@ public class DBFFileManager
             String keyValue = "";
             for (int j = 0; j < columns.size(); j++)
             {
+                String result = record[j] + "";
+                if(columns.get(j).equals("XXGPRQ") || columns.get(j).equals("XXZQQXR") || columns.get(j).equals("XXDQR"))
+                {
+                    try
+                    {
+                        Date date = new Date(result);
+                        result = date.getTime() + "";
+                    }
+                    catch (Exception e)
+                    {
+                        result = record[j] + "";
+                    }
+                }
+
+
                 if (j != columns.size() - 1)
                 {
-                    keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + record[j] + "\",";
+                    keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + result + "\",";
                 } else
                 {
-                    keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + record[j] + "\"";
+                    keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + result + "\"";
                 }
             }
 
@@ -172,7 +187,7 @@ public class DBFFileManager
             }
 
         }
-        json = json + "]}";
+        json = json + "]";
         json = json.replace(" ", "");
         JsonUtil.writeJosnFile(jsonPath, json, table, time,records.size());
         RequestVO requestVO = new RequestVO();

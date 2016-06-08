@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -36,6 +35,12 @@ public class DBHelper
         {
             connection = dataSource.getConnection();
         }
+
+        if(connection.isClosed())
+        {
+
+        }
+
         pst = connection.prepareCall(sql);
         pst.execute();
     }
