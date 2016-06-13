@@ -19,13 +19,13 @@ public class JsonUtil
      * @param date
      * @throws IOException
      */
-    public static void writeJosnFile(String path,String json,String fileName,Date date,int size) throws IOException
+    public static File writeJosnFile(String path, String json, String fileName, Date date, int size) throws IOException
     {
         //时间日期目录 例:20160522
         String path1 = path + DateUtil.changeToYYYYMMDD(date);
         File fileDir = new File(path1);
         //判断文件夹是否已存在
-        if(!fileDir.exists() && !fileDir.isDirectory())
+        if (!fileDir.exists() && !fileDir.isDirectory())
         {
             fileDir.mkdir();
         }
@@ -34,17 +34,25 @@ public class JsonUtil
         String path2 = path1 + "/" + fileName;
         File fileDir1 = new File(path2);
         //判断文件夹是否存在
-        if(!fileDir1.exists() && !fileDir1.isDirectory())
+        if (!fileDir1.exists() && !fileDir1.isDirectory())
         {
             fileDir1.mkdir();
         }
 
         //在文件目录下建立json文件以时间为名 例:031545
-        File file = new File(path2,DateUtil.changeToHHMMSS(date) +"(" + size + ")" + ".json");
+        File file = new File(path2, DateUtil.changeToHHMMSS(date) + "(" + size + ")" + ".json");
         file.createNewFile();
         byte[] b = json.getBytes();
         FileOutputStream fileOutputStream = new FileOutputStream(file);
-        fileOutputStream.write(b,0,b.length);
+        fileOutputStream.write(b, 0, b.length);
         fileOutputStream.close();
+
+        return file;
+    }
+
+    public static String readJsonFile(String path, String fileName) throws IOException
+    {
+        String fullFileName = path + fileName + ".json";
+        return new ReadBig().readBig(fullFileName);
     }
 }

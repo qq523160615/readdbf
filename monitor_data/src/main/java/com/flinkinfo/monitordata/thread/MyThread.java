@@ -7,6 +7,7 @@ import com.flinkinfo.monitordata.util.LoggerUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,7 @@ public class MyThread extends Thread
         catch (Exception e)
         {
             e.printStackTrace();
+            System.out.println(new Date());
         }
     }
 }

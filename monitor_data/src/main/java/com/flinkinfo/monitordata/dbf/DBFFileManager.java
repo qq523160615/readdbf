@@ -2,8 +2,9 @@ package com.flinkinfo.monitordata.dbf;
 
 import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.flinkinfo.monitordata.http.HttpClient;
-import com.flinkinfo.monitordata.http.bean.RequestVO;
+import com.flinkinfo.monitordata.http.bean.ResponseVO;
 import com.flinkinfo.monitordata.util.JsonUtil;
+import com.flinkinfo.monitordata.util.LoggerUtil;
 import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
@@ -11,12 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -38,6 +38,9 @@ public class DBFFileManager
 
     @Autowired
     HttpClient httpClient;
+
+    @Value("${transfer.url}")
+    String url;
 
     /**
      * 获得dbf文件属性
@@ -121,15 +124,17 @@ public class DBFFileManager
      */
     public void writeToDb(String path, String table, Date time) throws Exception
     {
+        LoggerUtil.info("开始写入json文件" + table);
+        System.out.println("开始写入json文件" + table);
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-        dbOperationManager.delete(table);
+//        dbOperationManager.delete(table);
 //        dbOperationManager.truncate(table);
 
         //创建表
-        dbOperationManager.create(table, dbfFile.getColumns());
+//        dbOperationManager.create(table, dbfFile.getColumns());
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
@@ -141,11 +146,11 @@ public class DBFFileManager
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
-            dbOperationManager.insert(table, record, time);
+//            dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
-                System.out.println(".");
-                System.out.println("插入完毕...\n插入总行数为:" + records.size());
+                System.out.println(table + "插入完毕...\n插入总行数为:" + records.size());
+                LoggerUtil.info(table + "插入完毕...\n插入总行数为:" + records.size());
             }
 
 
@@ -155,7 +160,7 @@ public class DBFFileManager
             for (int j = 0; j < columns.size(); j++)
             {
                 String result = record[j] + "";
-                if(columns.get(j).equals("XXGPRQ") || columns.get(j).equals("XXZQQXR") || columns.get(j).equals("XXDQR"))
+                if (columns.get(j).equals("XXGPRQ") || columns.get(j).equals("XXZQQXR") || columns.get(j).equals("XXDQR"))
                 {
                     try
                     {
@@ -172,7 +177,8 @@ public class DBFFileManager
                 if (j != columns.size() - 1)
                 {
                     keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + result + "\",";
-                } else
+                }
+                else
                 {
                     keyValue = keyValue + "\"" + columns.get(j) + "\":" + "\"" + result + "\"";
                 }
@@ -181,7 +187,8 @@ public class DBFFileManager
             if (i == records.size() - 1)
             {
                 json = json + keyValue + "}";
-            } else
+            }
+            else
             {
                 json = json + keyValue + "},";
             }
@@ -189,38 +196,9 @@ public class DBFFileManager
         }
         json = json + "]";
         json = json.replace(" ", "");
-        JsonUtil.writeJosnFile(jsonPath, json, table, time,records.size());
-        RequestVO requestVO = new RequestVO();
-        Map map = new HashMap<>();
-        switch (table)
-        {
-            case "NQXX":
-                requestVO.setServiceName("updateNQXX");
-                map.put("data",json);
-                requestVO.setParams(map);
-                break;
-
-            case "NQHQ":
-                requestVO.setServiceName("updateNQHQ");
-                map.put("data",json);
-                requestVO.setParams(map);
-                break;
-
-            case "NQXYXX":
-                requestVO.setServiceName("updateNQXYXX");
-                map.put("data",json);
-                requestVO.setParams(map);
-                break;
-
-            case "NQZSXX":
-                requestVO.setServiceName("updateNQZSXX");
-                map.put("data",json);
-                requestVO.setParams(map);
-                break;
-        }
+        File file = JsonUtil.writeJosnFile(jsonPath, json, table, time, records.size());
+        postFile(file, table);
 //        httpClient.post(requestVO,"");
-        System.out.println(json);
-
         //关闭数据库
 //        dbHelper.close();
     }
@@ -233,5 +211,15 @@ public class DBFFileManager
     public void closeInputStream() throws IOException
     {
         fis.close();
+    }
+
+    public void postFile(File file, String fileName) throws IOException
+    {
+        System.out.println("开始传送文件" + fileName);
+        ResponseVO responseVO = httpClient.postFile(file, url, fileName);
+        if (responseVO.getStatus() == ResponseVO.STATUS_FAILURE)
+        {
+            httpClient.postFile(file, url, fileName);
+        }
     }
 }

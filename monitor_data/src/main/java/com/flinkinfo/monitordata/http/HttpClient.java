@@ -25,7 +25,7 @@ public class HttpClient
 
     static
     {
-        client.setConnectTimeout(30, TimeUnit.SECONDS);
+        client.setConnectTimeout(3600, TimeUnit.SECONDS);
     }
 
     /**
@@ -70,27 +70,31 @@ public class HttpClient
      * 上传文件
      *
      * @param file     文件
-     * @param url      上传地址
+     * @param url      访问地址
      * @param fileName 文件名
      * @return
      * @throws IOException
      */
     public ResponseVO postFile(File file, String url, String fileName) throws IOException
     {
-        //设置上传格式
-        MediaType FILE_TYPE = MediaType.parse("multipart/form-data; charset=utf-8");
-
-        //上传文件
-        Request request = new Request.Builder()
-                .url(url + "?name=" + fileName)
-                .post(RequestBody.create(FILE_TYPE, file))
+        MediaType FILE_TYPE = MediaType.parse("multipart/form-data;charset=utf-8;");
+        RequestBody requestBody = new MultipartBuilder()
+                .type(MultipartBuilder.FORM)
+                .addFormDataPart("file", fileName, RequestBody.create(FILE_TYPE, file))
                 .build();
 
-        //返回数据
+        Request request = new Request.Builder()
+                .url(url + "?name=" + fileName)
+                .post(requestBody)
+                .build();
+
         Response response = client.newCall(request).execute();
+//        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
         String result = response.body().string();
         ResponseVO responseVO = JSON.parseObject(result, ResponseVO.class);
+        System.out.println(result);
 
         return responseVO;
     }
+
 }
