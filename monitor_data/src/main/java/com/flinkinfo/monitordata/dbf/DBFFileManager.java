@@ -69,6 +69,7 @@ public class DBFFileManager
         //调用DBFReader对实例方法得到path文件中字段的个数
         int fieldsCount = reader.getFieldCount();
 
+        System.out.println("读取dbf文件" + new Date());
         //取出字段信息
         for (int i = 0; i < fieldsCount; i++)
         {
@@ -81,7 +82,7 @@ public class DBFFileManager
         {
             records.add(rowValues);
         }
-
+        System.out.println("读取dbf文件结束" + new Date());
 
         //dbf设置属性
         dbfFile.setColumns(columns);
@@ -130,11 +131,11 @@ public class DBFFileManager
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-//        dbOperationManager.delete(table);
+        dbOperationManager.delete(table);
 //        dbOperationManager.truncate(table);
 
         //创建表
-//        dbOperationManager.create(table, dbfFile.getColumns());
+        dbOperationManager.create(table, dbfFile.getColumns());
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
@@ -142,11 +143,12 @@ public class DBFFileManager
         List<String> columns = dbfFile.getColumns();
         String json = "[";
 
+        System.out.println("开始插入数据库" + new Date());
         //将数据插入表中
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
-//            dbOperationManager.insert(table, record, time);
+            dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
                 System.out.println(table + "插入完毕...\n插入总行数为:" + records.size());
@@ -196,7 +198,10 @@ public class DBFFileManager
         }
         json = json + "]";
         json = json.replace(" ", "");
+        System.out.println("插入数据库完成" + new Date());
+        System.out.println("开始写入文件" + new Date());
         File file = JsonUtil.writeJosnFile(jsonPath, json, table, time, records.size());
+        System.out.println("写入文件结束" + new Date());
         postFile(file, table);
 //        httpClient.post(requestVO,"");
         //关闭数据库
@@ -215,11 +220,12 @@ public class DBFFileManager
 
     public void postFile(File file, String fileName) throws IOException
     {
-        System.out.println("开始传送文件" + fileName);
+        System.out.println("开始传送文件" + fileName + new Date());
         ResponseVO responseVO = httpClient.postFile(file, url, fileName);
         if (responseVO.getStatus() == ResponseVO.STATUS_FAILURE)
         {
             httpClient.postFile(file, url, fileName);
         }
+        System.out.print("传送文件完成"  + fileName + new Date());
     }
 }
