@@ -7,6 +7,7 @@ import com.flinkinfo.monitordata.cache.AppCache;
 import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.flinkinfo.monitordata.http.HttpClient;
 import com.flinkinfo.monitordata.http.bean.ResponseVO;
+import com.flinkinfo.monitordata.util.DateUtil;
 import com.flinkinfo.monitordata.util.JsonUtil;
 import com.flinkinfo.monitordata.util.LoggerUtil;
 import com.linuxense.javadbf.DBFException;
@@ -147,7 +148,34 @@ public class DBFFileManager
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
 
+        //获取dbf属性值
         List<String> columns = dbfFile.getColumns();
+
+        //插入数据库
+        JSONArray jsonArray = insertDb(records, columns, table, time);
+
+        //写入json文件
+        File file = writeJsonFile(jsonArray, table, time);
+
+        //如果数据不为空则传送
+//        if (jsonArray.size() != 0)
+//        {
+//            postFile(file, table);
+//        }
+    }
+
+    /**
+     * 插入数据库
+     *
+     * @param records
+     * @param columns
+     * @param table
+     * @param time
+     * @throws SQLException
+     * @throws IOException
+     */
+    private JSONArray insertDb(List<Object[]> records, List<String> columns, String table, Date time) throws SQLException, IOException
+    {
         JSONArray jsonArray = new JSONArray();
         String json = "";
 
@@ -157,7 +185,18 @@ public class DBFFileManager
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
-            id = table + record[0];
+            if (table.equals("NQXX") || table.equals("NQHQ"))
+            {
+                id = table + record[0];
+            }
+            else if (table.equals("NQXYXX"))
+            {
+                id = table + record[0] + DateUtil.changeToYYYYMMDD(new Date()) + record[5];
+            }
+            else if (table.equals("NQZXXX"))
+            {
+                id = table + record[0] + DateUtil.changeToYYYYMMDD(new Date()) + record[5];
+            }
             dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
@@ -211,16 +250,25 @@ public class DBFFileManager
             }
         }
         System.out.println("插入数据库完成" + new Date());
+
+        return jsonArray;
+    }
+
+    /**
+     * 写入json文件
+     *
+     * @param jsonArray
+     * @param table
+     * @param time
+     * @throws IOException
+     */
+    private File writeJsonFile(JSONArray jsonArray, String table, Date time) throws IOException
+    {
         System.out.println("开始写入文件" + new Date());
         File file = JsonUtil.writeJosnFile(jsonPath, jsonArray.toJSONString(), table, time, jsonArray.size());
         System.out.println("写入文件结束" + new Date());
-        if (jsonArray.size() != 0)
-        {
-            postFile(file, table);
-        }
-//        httpClient.post(requestVO,"");
-        //关闭数据库
-//        dbHelper.close();
+
+        return file;
     }
 
     /**
