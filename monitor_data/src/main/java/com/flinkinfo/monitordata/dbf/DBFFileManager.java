@@ -1,5 +1,9 @@
 package com.flinkinfo.monitordata.dbf;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.flinkinfo.monitordata.cache.AppCache;
 import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.flinkinfo.monitordata.http.HttpClient;
 import com.flinkinfo.monitordata.http.bean.ResponseVO;
@@ -41,6 +45,9 @@ public class DBFFileManager
 
     @Value("${transfer.url}")
     String url;
+
+    @Autowired
+    AppCache appCache;
 
     /**
      * 获得dbf文件属性
@@ -141,13 +148,16 @@ public class DBFFileManager
         List<Object[]> records = dbfFile.getRecords();
 
         List<String> columns = dbfFile.getColumns();
-        String json = "[";
+        JSONArray jsonArray = new JSONArray();
+        String json = "";
 
         System.out.println("开始插入数据库" + new Date());
+        String id = "";
         //将数据插入表中
         for (int i = 0; i < records.size(); i++)
         {
             Object[] record = records.get(i);
+            id = table + record[0];
             dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
@@ -157,7 +167,6 @@ public class DBFFileManager
 
 
             //将数据转成json写入文件
-            json = json + "{";
             String keyValue = "";
             for (int j = 0; j < columns.size(); j++)
             {
@@ -186,23 +195,29 @@ public class DBFFileManager
                 }
             }
 
-            if (i == records.size() - 1)
+            json = "{" + keyValue + "}";
+            json = json.replace(" ", "");
+            String value = appCache.get(id);
+            if (value == null)
             {
-                json = json + keyValue + "}";
+                appCache.put(id, json);
+                JSONObject jsonObject = JSON.parseObject(json);
+                jsonArray.add(jsonObject);
             }
-            else
+            else if (!value.equals(json))
             {
-                json = json + keyValue + "},";
+                JSONObject jsonObject = JSON.parseObject(json);
+                jsonArray.add(jsonObject);
             }
-
         }
-        json = json + "]";
-        json = json.replace(" ", "");
         System.out.println("插入数据库完成" + new Date());
         System.out.println("开始写入文件" + new Date());
-        File file = JsonUtil.writeJosnFile(jsonPath, json, table, time, records.size());
+        File file = JsonUtil.writeJosnFile(jsonPath, jsonArray.toJSONString(), table, time, jsonArray.size());
         System.out.println("写入文件结束" + new Date());
-        postFile(file, table);
+        if (jsonArray.size() != 0)
+        {
+            postFile(file, table);
+        }
 //        httpClient.post(requestVO,"");
         //关闭数据库
 //        dbHelper.close();
@@ -226,6 +241,6 @@ public class DBFFileManager
         {
             httpClient.postFile(file, url, fileName);
         }
-        System.out.print("传送文件完成"  + fileName + new Date());
+        System.out.print("传送文件完成" + fileName + new Date());
     }
 }
