@@ -1,16 +1,12 @@
 package com.flinkinfo.monitordata.monitor;
 
 import com.flinkinfo.monitordata.dbf.DBFFileManager;
-import com.flinkinfo.monitordata.thread.MyThread;
 import com.flinkinfo.monitordata.util.LoggerUtil;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -38,7 +34,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     {
         LoggerUtil.info("[新增]:" + file.getAbsolutePath());
         System.out.println("[新增]:" + file.getAbsolutePath());
-        threadPoolExecutor.execute(new WriteThread(file,new Date()));
+//        threadPoolExecutor.execute(new WriteThread(file,new Date()));
 
     }
 
@@ -81,6 +77,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
                 writeToDb();
             } catch (Exception e)
             {
+                LoggerUtil.error(e.getMessage());
                 e.printStackTrace();
             }
         }

@@ -3,7 +3,6 @@ package com.flinkinfo.monitordata.dbf;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.flinkinfo.monitordata.cache.AppCache;
 import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.flinkinfo.monitordata.http.HttpClient;
 import com.flinkinfo.monitordata.http.bean.ResponseVO;
@@ -47,8 +46,8 @@ public class DBFFileManager
     @Value("${transfer.url}")
     String url;
 
-    @Autowired
-    AppCache appCache;
+//    @Autowired
+//    AppCache appCache;
 
     /**
      * 获得dbf文件属性
@@ -90,6 +89,7 @@ public class DBFFileManager
         {
             records.add(rowValues);
         }
+//        closeInputStream();
         System.out.println("读取dbf文件结束" + new Date());
 
         //dbf设置属性
@@ -160,7 +160,7 @@ public class DBFFileManager
         //如果数据不为空则传送
 //        if (jsonArray.size() != 0)
 //        {
-//            postFile(file, table);
+            postFile(file, table);
 //        }
     }
 
@@ -236,18 +236,18 @@ public class DBFFileManager
 
             json = "{" + keyValue + "}";
             json = json.replace(" ", "");
-            String value = appCache.get(id);
-            if (value == null)
-            {
-                appCache.put(id, json);
+//            String value = appCache.get(id);
+//            if (value == null)
+//            {
+//                appCache.put(id, json);
+//                JSONObject jsonObject = JSON.parseObject(json);
+//                jsonArray.add(jsonObject);
+//            }
+//            else if (!value.equals(json))
+//            {
                 JSONObject jsonObject = JSON.parseObject(json);
                 jsonArray.add(jsonObject);
-            }
-            else if (!value.equals(json))
-            {
-                JSONObject jsonObject = JSON.parseObject(json);
-                jsonArray.add(jsonObject);
-            }
+//            }
         }
         System.out.println("插入数据库完成" + new Date());
 

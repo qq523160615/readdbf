@@ -4,7 +4,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -14,7 +13,7 @@ import java.io.Serializable;
  *
  * @author jimmy
  */
-@Component
+//@Component
 public class AppCache
 {
     @Resource(name = "redisTemplate")
