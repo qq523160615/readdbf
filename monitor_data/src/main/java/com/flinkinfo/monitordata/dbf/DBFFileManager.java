@@ -139,11 +139,11 @@ public class DBFFileManager
         DBFFile dbfFile = readDBF(path);
 
         //删除表
-        dbOperationManager.delete(table);
+//        dbOperationManager.delete(table);
 //        dbOperationManager.truncate(table);
 
         //创建表
-        dbOperationManager.create(table, dbfFile.getColumns());
+        dbOperationManager.create(table, dbfFile.getColumns(),time);
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();

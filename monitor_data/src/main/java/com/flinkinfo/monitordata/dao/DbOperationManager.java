@@ -33,11 +33,11 @@ public class DbOperationManager
      * @param table   表名
      * @param columns 列名列表
      */
-    public void create(String table, List<String> columns) throws SQLException
+    public void create(String table, List<String> columns,Date time) throws SQLException
     {
         SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         date = tempDate.format(new Date());
-        String createSql = "create table if not exists " + table + "(id int(5) NOT NULL auto_increment,";
+        String createSql = "create table if not exists " + table + DateUtil.changeToYYYYMMDDHHMMSS(time) + "(id int(5) NOT NULL auto_increment,";
         String colum = "";
         for (int i = 0; i < columns.size(); i++)
         {
