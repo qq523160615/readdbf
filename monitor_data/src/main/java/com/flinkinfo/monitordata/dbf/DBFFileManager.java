@@ -3,6 +3,7 @@ package com.flinkinfo.monitordata.dbf;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.flinkinfo.monitordata.cache.AppCache;
 import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.flinkinfo.monitordata.http.HttpClient;
 import com.flinkinfo.monitordata.http.bean.RequestVO;
@@ -50,8 +51,8 @@ public class DBFFileManager
     @Value("${cxs.update_data}")
     String updateUrl;
 
-//    @Autowired
-//    AppCache appCache;
+    @Autowired
+    AppCache appCache;
 
     /**
      * 获得dbf文件属性
@@ -167,8 +168,8 @@ public class DBFFileManager
         //如果数据不为空则传送
 //        if (jsonArray.size() != 0)
 //        {
-        postFile(file, table);
-        updateData(table);
+//            postFile(file, table);
+//            updateData(table);
 //        }
     }
 
@@ -197,11 +198,12 @@ public class DBFFileManager
      */
     private JSONArray insertDb(List<Object[]> records, List<String> columns, String table, Date time) throws SQLException, IOException
     {
-        //表名
-        table = table + DateUtil.changeToYYYYMMDDHHMMSS(time);
 
         //创建表
-        dbOperationManager.create(table, columns, time);
+//        dbOperationManager.create(table, columns, time);
+
+        //表名
+//        table = table + DateUtil.changeToYYYYMMDDHHMMSS(time);
 
         JSONArray jsonArray = new JSONArray();
         String json = "";
@@ -224,13 +226,13 @@ public class DBFFileManager
             {
                 id = table + record[0] + DateUtil.changeToYYYYMMDD(new Date()) + record[5];
             }
-            dbOperationManager.insert(table, record, time);
+
+//            dbOperationManager.insert(table, record, time);
             if (i == records.size() - 1)
             {
-                System.out.println(table + "插入完毕...\n插入总行数为:" + records.size());
-                LoggerUtil.info(table + "插入完毕...\n插入总行数为:" + records.size());
+                System.out.println(table + "插入完毕...\n插入总行数为:" + jsonArray.size());
+                LoggerUtil.info(table + "插入完毕...\n插入总行数为:" + jsonArray.size());
             }
-
 
             //将数据转成json写入文件
             String keyValue = "";
@@ -263,18 +265,19 @@ public class DBFFileManager
 
             json = "{" + keyValue + "}";
             json = json.replace(" ", "");
-//            String value = appCache.get(id);
-//            if (value == null)
-//            {
-//                appCache.put(id, json);
-//                JSONObject jsonObject = JSON.parseObject(json);
-//                jsonArray.add(jsonObject);
-//            }
-//            else if (!value.equals(json))
-//            {
-            JSONObject jsonObject = JSON.parseObject(json);
-            jsonArray.add(jsonObject);
-//            }
+            String value = appCache.get(id);
+            if (value == null)
+            {
+                appCache.put(id, json);
+                JSONObject jsonObject = JSON.parseObject(json);
+                jsonArray.add(jsonObject);
+            }
+            else if (!value.equals(json))
+            {
+                JSONObject jsonObject = JSON.parseObject(json);
+                appCache.put(id,json);
+                jsonArray.add(jsonObject);
+            }
         }
         System.out.println("插入数据库完成" + new Date());
 
