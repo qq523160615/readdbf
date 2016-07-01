@@ -37,7 +37,7 @@ public class DbOperationManager
     {
         SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         date = tempDate.format(new Date());
-        String createSql = "create table if not exists " + table + DateUtil.changeToYYYYMMDDHHMMSS(time) + "(id int(5) NOT NULL auto_increment,";
+        String createSql = "create table if not exists " + table + "(id int(5) NOT NULL auto_increment,";
         String colum = "";
         for (int i = 0; i < columns.size(); i++)
         {

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.flinkinfo.monitordata.http.bean.RequestVO;
 import com.flinkinfo.monitordata.http.bean.ResponseVO;
+import com.flinkinfo.monitordata.util.LoggerUtil;
 import com.squareup.okhttp.*;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,9 @@ public class HttpClient
 
     static
     {
-        client.setConnectTimeout(3600, TimeUnit.SECONDS);
+        client.setConnectTimeout(3, TimeUnit.MINUTES);
+        client.setWriteTimeout(3, TimeUnit.MINUTES);
+        client.setReadTimeout(3, TimeUnit.MINUTES);
     }
 
     /**
@@ -37,31 +40,27 @@ public class HttpClient
      */
     public ResponseVO post(RequestVO requestVO, String url) throws Exception
     {
+        System.out.println(JSON.toJSONString(requestVO));
+        LoggerUtil.info(JSON.toJSONString(requestVO));
+
         ResponseVO responseVO = null;
-        try
-        {
-            RequestBody body = RequestBody.create(JSONMTYPE, JSONObject.toJSONString(requestVO));
+        RequestBody body = RequestBody.create(JSONMTYPE, JSONObject.toJSONString(requestVO));
 
-            //请求参数设置
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
+        //请求参数设置
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
 
-            //请求数据
-            Response response = client.newCall(request).execute();
+        //请求数据
+        Response response = client.newCall(request).execute();
+        String result = response.body().string();
 
+        System.out.println(result);
+        LoggerUtil.info(result);
 
-            String result = response.body().string();
-            responseVO = JSON.parseObject(result, ResponseVO.class);
+        responseVO = JSON.parseObject(result, ResponseVO.class);
 
-
-            //返回解密数据
-        }
-        catch (IOException e)
-        {
-            throw new Exception("IOException");
-        }
         return responseVO;
     }
 
@@ -75,7 +74,7 @@ public class HttpClient
      * @return
      * @throws IOException
      */
-    public ResponseVO postFile(File file, String url, String fileName) throws IOException
+    public ResponseVO postFormFile(File file, String url, String fileName) throws IOException
     {
         MediaType FILE_TYPE = MediaType.parse("multipart/form-data;charset=utf-8;");
         RequestBody requestBody = new MultipartBuilder()
@@ -97,4 +96,33 @@ public class HttpClient
         return responseVO;
     }
 
+    /**
+     * 上传文件
+     *
+     * @param file     文件
+     * @param url      上传地址
+     * @param fileName 文件名
+     * @return
+     * @throws IOException
+     */
+    public ResponseVO postFile(File file, String url, String fileName) throws IOException
+    {
+        MediaType MEDIA_TYPE_MARKDOWN
+                = MediaType.parse("multipart/form-data; charset=utf-8");
+
+        Request request = new Request.Builder()
+                .url(url + "?name=" + fileName)
+                .post(RequestBody.create(MEDIA_TYPE_MARKDOWN, file))
+                .build();
+
+        System.out.println("开始上传文件");
+        LoggerUtil.info("\"开始上传文件\"");
+        Response response = client.newCall(request).execute();
+        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+        String result = response.body().string();
+
+        System.out.println(result);
+        LoggerUtil.info(result);
+        return new ResponseVO();
+    }
 }

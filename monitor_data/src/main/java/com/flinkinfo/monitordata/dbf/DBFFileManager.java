@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.flinkinfo.monitordata.dao.DbOperationManager;
 import com.flinkinfo.monitordata.http.HttpClient;
+import com.flinkinfo.monitordata.http.bean.RequestVO;
 import com.flinkinfo.monitordata.http.bean.ResponseVO;
 import com.flinkinfo.monitordata.util.DateUtil;
 import com.flinkinfo.monitordata.util.JsonUtil;
@@ -46,6 +47,9 @@ public class DBFFileManager
     @Value("${transfer.url}")
     String url;
 
+    @Value("${cxs.update_data}")
+    String updateUrl;
+
 //    @Autowired
 //    AppCache appCache;
 
@@ -77,6 +81,8 @@ public class DBFFileManager
         int fieldsCount = reader.getFieldCount();
 
         System.out.println("读取dbf文件" + new Date());
+        LoggerUtil.info("读取dbf文件" + new Date());
+
         //取出字段信息
         for (int i = 0; i < fieldsCount; i++)
         {
@@ -91,11 +97,14 @@ public class DBFFileManager
         }
 //        closeInputStream();
         System.out.println("读取dbf文件结束" + new Date());
+        LoggerUtil.info("读取dbf文件结束" + new Date());
 
         //dbf设置属性
         dbfFile.setColumns(columns);
         dbfFile.setFiledCount(fieldsCount);
         dbfFile.setRecords(records);
+
+        closeInputStream();
 
         return dbfFile;
     }
@@ -135,15 +144,13 @@ public class DBFFileManager
     {
         LoggerUtil.info("开始写入json文件" + table);
         System.out.println("开始写入json文件" + table);
+
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
 
         //删除表
 //        dbOperationManager.delete(table);
 //        dbOperationManager.truncate(table);
-
-        //创建表
-        dbOperationManager.create(table, dbfFile.getColumns(),time);
 
         //获取dbf行数据
         List<Object[]> records = dbfFile.getRecords();
@@ -160,8 +167,22 @@ public class DBFFileManager
         //如果数据不为空则传送
 //        if (jsonArray.size() != 0)
 //        {
-            postFile(file, table);
+        postFile(file, table);
+        updateData(table);
 //        }
+    }
+
+
+    /**
+     * 更新数据
+     *
+     * @throws IOException
+     */
+    public void updateData(String fileName) throws Exception
+    {
+        RequestVO requestVO = new RequestVO();
+        requestVO.setServiceName("update" + fileName);
+        httpClient.post(requestVO, updateUrl);
     }
 
     /**
@@ -176,6 +197,12 @@ public class DBFFileManager
      */
     private JSONArray insertDb(List<Object[]> records, List<String> columns, String table, Date time) throws SQLException, IOException
     {
+        //表名
+        table = table + DateUtil.changeToYYYYMMDDHHMMSS(time);
+
+        //创建表
+        dbOperationManager.create(table, columns, time);
+
         JSONArray jsonArray = new JSONArray();
         String json = "";
 
@@ -245,8 +272,8 @@ public class DBFFileManager
 //            }
 //            else if (!value.equals(json))
 //            {
-                JSONObject jsonObject = JSON.parseObject(json);
-                jsonArray.add(jsonObject);
+            JSONObject jsonObject = JSON.parseObject(json);
+            jsonArray.add(jsonObject);
 //            }
         }
         System.out.println("插入数据库完成" + new Date());
@@ -280,6 +307,7 @@ public class DBFFileManager
     {
         fis.close();
     }
+
 
     public void postFile(File file, String fileName) throws IOException
     {

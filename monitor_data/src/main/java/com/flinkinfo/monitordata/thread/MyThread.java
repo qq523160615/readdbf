@@ -26,8 +26,8 @@ public class MyThread extends Thread
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         monitorManger = context.getBean(MonitorManger.class);
         monitorListen = context.getBean(MonitorListen.class);
-        ThreadPoolExecutor threadPoolExecutor  = new ThreadPoolExecutor(2,4,3,
-                TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(3),new ThreadPoolExecutor.DiscardOldestPolicy());
+        ThreadPoolExecutor threadPoolExecutor  = new ThreadPoolExecutor(10,12,3,
+                TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(10),new ThreadPoolExecutor.DiscardOldestPolicy());
         monitorListen.setThreadPoolExecutor(threadPoolExecutor);
     }
 
