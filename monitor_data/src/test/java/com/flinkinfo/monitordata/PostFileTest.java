@@ -1,10 +1,10 @@
 package com.flinkinfo.monitordata;
 
 import com.alibaba.fastjson.JSONArray;
-import com.flinkinfo.monitordata.http.HttpClient;
-import com.flinkinfo.monitordata.http.bean.RequestVO;
-import com.flinkinfo.monitordata.http.bean.ResponseVO;
-import com.flinkinfo.monitordata.util.JsonUtil;
+import com.flinkinfo.monitordata.componet.http.HttpClient;
+import com.flinkinfo.monitordata.componet.http.bean.RequestVO;
+import com.flinkinfo.monitordata.componet.http.bean.ResponseVO;
+import com.flinkinfo.monitordata.componet.util.JsonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

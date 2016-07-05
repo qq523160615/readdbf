@@ -1,10 +1,10 @@
-package com.flinkinfo.monitordata.http;
+package com.flinkinfo.monitordata.componet.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.flinkinfo.monitordata.http.bean.RequestVO;
-import com.flinkinfo.monitordata.http.bean.ResponseVO;
-import com.flinkinfo.monitordata.util.LoggerUtil;
+import com.flinkinfo.monitordata.componet.http.bean.RequestVO;
+import com.flinkinfo.monitordata.componet.http.bean.ResponseVO;
+import com.flinkinfo.monitordata.componet.util.LoggerUtil;
 import com.squareup.okhttp.*;
 import org.springframework.stereotype.Component;
 

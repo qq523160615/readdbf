@@ -1,9 +1,9 @@
-package com.flinkinfo.monitordata.thread;
+package com.flinkinfo.monitordata.componet.thread;
 
 
-import com.flinkinfo.monitordata.monitor.MonitorListen;
-import com.flinkinfo.monitordata.monitor.MonitorManger;
-import com.flinkinfo.monitordata.util.LoggerUtil;
+import com.flinkinfo.monitordata.componet.monitor.MonitorListen;
+import com.flinkinfo.monitordata.componet.monitor.MonitorManger;
+import com.flinkinfo.monitordata.componet.util.LoggerUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,20 +15,23 @@ import java.util.concurrent.TimeUnit;
 /**
  * 线程
  */
-public class MyThread extends Thread
+public class DBFMonitorThread extends Thread
 {
     MonitorManger monitorManger;
 
     MonitorListen monitorListen;
 
-    public MyThread()
+    public DBFMonitorThread()
     {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         monitorManger = context.getBean(MonitorManger.class);
         monitorListen = context.getBean(MonitorListen.class);
-        ThreadPoolExecutor threadPoolExecutor  = new ThreadPoolExecutor(10,12,3,
-                TimeUnit.SECONDS,new ArrayBlockingQueue<Runnable>(10),new ThreadPoolExecutor.DiscardOldestPolicy());
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10, 12, 3,
+                TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10), new ThreadPoolExecutor.DiscardOldestPolicy());
         monitorListen.setThreadPoolExecutor(threadPoolExecutor);
+
+        TaskThread taskThread = context.getBean(TaskThread.class);
+        taskThread.start();
     }
 
     @Override

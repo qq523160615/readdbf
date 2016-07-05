@@ -1,4 +1,4 @@
-package com.flinkinfo.monitordata.dao;
+package com.flinkinfo.monitordata.componet.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

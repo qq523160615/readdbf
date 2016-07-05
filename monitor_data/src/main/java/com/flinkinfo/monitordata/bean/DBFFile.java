@@ -1,4 +1,4 @@
-package com.flinkinfo.monitordata.dbf;
+package com.flinkinfo.monitordata.bean;
 
 import java.util.List;
 
@@ -9,6 +9,9 @@ import java.util.List;
  */
 public class DBFFile
 {
+    //文件名
+    private String name;
+
     //字段数
     private int filedCount;
 
@@ -17,6 +20,16 @@ public class DBFFile
 
     //行数据
     private List<Object[]> records;
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
     public int getFiledCount()
     {

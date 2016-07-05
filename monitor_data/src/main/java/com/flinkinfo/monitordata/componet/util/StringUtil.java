@@ -1,4 +1,4 @@
-package com.flinkinfo.monitordata.util;
+package com.flinkinfo.monitordata.componet.util;
 
 import java.util.ArrayList;
 import java.util.List;

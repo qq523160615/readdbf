@@ -1,6 +1,7 @@
-package com.flinkinfo.monitordata.util;
+package com.flinkinfo.monitordata.componet.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -56,8 +57,23 @@ public class DateUtil
      */
     public static String changeToHHMMSS(Date time)
     {
-        DateFormat format = new SimpleDateFormat("hhmmss");
+        DateFormat format = new SimpleDateFormat("HHmmss");
         String date = format.format(time);
         return date;
+    }
+
+    /**
+     * @param time
+     * @return
+     */
+    public static Date specialDate(String time) throws ParseException
+    {
+        DateFormat format = new SimpleDateFormat("yyyyMMdd");
+        Date nowDate = new Date();
+        String date = format.format(nowDate);
+        String completeTime = date + " " + time;
+        Date date1 = format.parse(completeTime);
+
+        return date1;
     }
 }

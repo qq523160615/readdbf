@@ -1,4 +1,4 @@
-package com.flinkinfo.monitordata.http.bean;
+package com.flinkinfo.monitordata.componet.http.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
 

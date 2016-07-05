@@ -1,21 +1,16 @@
-package com.flinkinfo.monitordata.dbf;
+package com.flinkinfo.monitordata.manager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.flinkinfo.monitordata.cache.AppCache;
-import com.flinkinfo.monitordata.dao.DbOperationManager;
-import com.flinkinfo.monitordata.http.HttpClient;
-import com.flinkinfo.monitordata.http.bean.RequestVO;
-import com.flinkinfo.monitordata.http.bean.ResponseVO;
-import com.flinkinfo.monitordata.util.DateUtil;
-import com.flinkinfo.monitordata.util.JsonUtil;
-import com.flinkinfo.monitordata.util.LoggerUtil;
+import com.flinkinfo.monitordata.bean.DBFFile;
+import com.flinkinfo.monitordata.componet.cache.AppCache;
+import com.flinkinfo.monitordata.componet.util.DateUtil;
+import com.flinkinfo.monitordata.componet.util.LoggerUtil;
 import com.linuxense.javadbf.DBFException;
 import com.linuxense.javadbf.DBFField;
 import com.linuxense.javadbf.DBFReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -37,21 +32,6 @@ public class DBFFileManager
     private InputStream fis;
 
     @Autowired
-    DbOperationManager dbOperationManager;
-
-    @Value("${json.dir}")
-    String jsonPath;
-
-    @Autowired
-    HttpClient httpClient;
-
-    @Value("${transfer.url}")
-    String url;
-
-    @Value("${cxs.update_data}")
-    String updateUrl;
-
-    @Autowired
     AppCache appCache;
 
     /**
@@ -61,13 +41,17 @@ public class DBFFileManager
      * @return
      * @throws IOException
      */
-    public DBFFile readDBF(String path) throws IOException
+    private DBFFile readDBF(String path) throws IOException
     {
         //列名
         List<String> columns = new ArrayList<String>();
 
         //行数据
         List<Object[]> records = new ArrayList<Object[]>();
+
+        //文件名
+        File file = new File(path);
+        String filename = file.getName().substring(0, file.getName().indexOf("."));
 
         //dbf文件实体
         DBFFile dbfFile = new DBFFile();
@@ -76,7 +60,7 @@ public class DBFFileManager
         Object[] rowValues;
 
         //获取到dbf文件解读器
-        DBFReader reader = getDBFreader(path);
+        DBFReader reader = getDBFReader(path);
 
         //调用DBFReader对实例方法得到path文件中字段的个数
         int fieldsCount = reader.getFieldCount();
@@ -96,7 +80,7 @@ public class DBFFileManager
         {
             records.add(rowValues);
         }
-//        closeInputStream();
+
         System.out.println("读取dbf文件结束" + new Date());
         LoggerUtil.info("读取dbf文件结束" + new Date());
 
@@ -104,6 +88,7 @@ public class DBFFileManager
         dbfFile.setColumns(columns);
         dbfFile.setFiledCount(fieldsCount);
         dbfFile.setRecords(records);
+        dbfFile.setName(filename);
 
         closeInputStream();
 
@@ -119,7 +104,7 @@ public class DBFFileManager
      * @throws FileNotFoundException
      * @throws DBFException
      */
-    private DBFReader getDBFreader(String path) throws IOException
+    private DBFReader getDBFReader(String path) throws IOException
     {
         //读取文件的输入流
         fis = new FileInputStream(path);
@@ -136,79 +121,36 @@ public class DBFFileManager
     /**
      * 将dbf文件数据写入数据库中
      *
-     * @param path  dbf文件地址
-     * @param table 表名
+     * @param path dbf文件地址
      * @throws IOException
      * @throws SQLException
      */
-    public void writeToDb(String path, String table, Date time) throws Exception
+    public String readDBF(String path, boolean isCache) throws Exception
     {
-        LoggerUtil.info("开始写入json文件" + table);
-        System.out.println("开始写入json文件" + table);
-
         //获取dbf文件实体
         DBFFile dbfFile = readDBF(path);
 
-        //删除表
-//        dbOperationManager.delete(table);
-//        dbOperationManager.truncate(table);
-
-        //获取dbf行数据
-        List<Object[]> records = dbfFile.getRecords();
-
-        //获取dbf属性值
-        List<String> columns = dbfFile.getColumns();
-
         //插入数据库
-        JSONArray jsonArray = insertDb(records, columns, table, time);
+        String result = changeToJson(dbfFile, isCache);
 
-        //写入json文件
-        File file = writeJsonFile(jsonArray, table, time);
-
-        //如果数据不为空则传送
-//        if (jsonArray.size() != 0)
-//        {
-//            postFile(file, table);
-//            updateData(table);
-//        }
-    }
-
-
-    /**
-     * 更新数据
-     *
-     * @throws IOException
-     */
-    public void updateData(String fileName) throws Exception
-    {
-        RequestVO requestVO = new RequestVO();
-        requestVO.setServiceName("update" + fileName);
-        httpClient.post(requestVO, updateUrl);
+        return result;
     }
 
     /**
      * 插入数据库
      *
-     * @param records
-     * @param columns
-     * @param table
-     * @param time
      * @throws SQLException
      * @throws IOException
      */
-    private JSONArray insertDb(List<Object[]> records, List<String> columns, String table, Date time) throws SQLException, IOException
+    private String changeToJson(DBFFile dbfFile, boolean isCache) throws SQLException, IOException
     {
-
-        //创建表
-//        dbOperationManager.create(table, columns, time);
-
-        //表名
-//        table = table + DateUtil.changeToYYYYMMDDHHMMSS(time);
+        List<Object[]> records = dbfFile.getRecords();
+        List<String> columns = dbfFile.getColumns();
+        String table = dbfFile.getName();
 
         JSONArray jsonArray = new JSONArray();
         String json = "";
 
-        System.out.println("开始插入数据库" + new Date());
         String id = "";
         //将数据插入表中
         for (int i = 0; i < records.size(); i++)
@@ -225,13 +167,6 @@ public class DBFFileManager
             else if (table.equals("NQZXXX"))
             {
                 id = table + record[0] + DateUtil.changeToYYYYMMDD(new Date()) + record[5];
-            }
-
-//            dbOperationManager.insert(table, record, time);
-            if (i == records.size() - 1)
-            {
-                System.out.println(table + "插入完毕...\n插入总行数为:" + jsonArray.size());
-                LoggerUtil.info(table + "插入完毕...\n插入总行数为:" + jsonArray.size());
             }
 
             //将数据转成json写入文件
@@ -265,41 +200,41 @@ public class DBFFileManager
 
             json = "{" + keyValue + "}";
             json = json.replace(" ", "");
-            String value = appCache.get(id);
-            if (value == null)
+            if (isCache)
             {
-                appCache.put(id, json);
-                JSONObject jsonObject = JSON.parseObject(json);
-                jsonArray.add(jsonObject);
+                String value = appCache.get(id);
+                if (value == null)
+                {
+                    appCache.put(id, json);
+                    JSONObject jsonObject = JSON.parseObject(json);
+                    jsonArray.add(jsonObject);
+                }
+                else if (!value.equals(json))
+                {
+                    JSONObject jsonObject = JSON.parseObject(json);
+                    appCache.put(id, json);
+                    jsonArray.add(jsonObject);
+                }
             }
-            else if (!value.equals(json))
+            else
             {
                 JSONObject jsonObject = JSON.parseObject(json);
-                appCache.put(id,json);
                 jsonArray.add(jsonObject);
             }
         }
-        System.out.println("插入数据库完成" + new Date());
 
-        return jsonArray;
+        if (jsonArray.size() == 0)
+        {
+            return "";
+        }
+        else
+        {
+            return JSON.toJSONString(jsonArray);
+        }
     }
 
-    /**
-     * 写入json文件
-     *
-     * @param jsonArray
-     * @param table
-     * @param time
-     * @throws IOException
-     */
-    private File writeJsonFile(JSONArray jsonArray, String table, Date time) throws IOException
-    {
-        System.out.println("开始写入文件" + new Date());
-        File file = JsonUtil.writeJosnFile(jsonPath, jsonArray.toJSONString(), table, time, jsonArray.size());
-        System.out.println("写入文件结束" + new Date());
 
-        return file;
-    }
+
 
     /**
      * 关闭文件流
@@ -312,14 +247,14 @@ public class DBFFileManager
     }
 
 
-    public void postFile(File file, String fileName) throws IOException
-    {
-        System.out.println("开始传送文件" + fileName + new Date());
-        ResponseVO responseVO = httpClient.postFile(file, url, fileName);
-        if (responseVO.getStatus() == ResponseVO.STATUS_FAILURE)
-        {
-            httpClient.postFile(file, url, fileName);
-        }
-        System.out.print("传送文件完成" + fileName + new Date());
-    }
+//    public void postFile(File file, String fileName) throws IOException
+//    {
+//        System.out.println("开始传送文件" + fileName + new Date());
+//        ResponseVO responseVO = httpClient.postFile(file, url, fileName);
+//        if (responseVO.getStatus() == ResponseVO.STATUS_FAILURE)
+//        {
+//            httpClient.postFile(file, url, fileName);
+//        }
+//        System.out.print("传送文件完成" + fileName + new Date());
+//    }
 }

@@ -1,6 +1,6 @@
 package com.flinkinfo.monitordata.main;
 
-import com.flinkinfo.monitordata.thread.MyThread;
+import com.flinkinfo.monitordata.componet.thread.DBFMonitorThread;
 
 /**
  * 主程序
@@ -11,6 +11,6 @@ public class App
 {
     public static void main(String[] args)
     {
-        new MyThread().start();
+        new DBFMonitorThread().start();
     }
 }

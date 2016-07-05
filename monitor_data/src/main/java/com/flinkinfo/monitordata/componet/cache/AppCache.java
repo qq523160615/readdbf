@@ -1,4 +1,4 @@
-package com.flinkinfo.monitordata.cache;
+package com.flinkinfo.monitordata.componet.cache;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -60,6 +60,21 @@ public class AppCache
                     return content;
                 }
                 return null;
+            }
+        });
+    }
+
+    /**
+     * @return
+     */
+    public Object flushDB()
+    {
+        return redisTemplate.execute(new RedisCallback()
+        {
+            public String doInRedis(RedisConnection connection) throws DataAccessException
+            {
+                connection.flushDb();
+                return "ok";
             }
         });
     }

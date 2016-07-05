@@ -1,9 +1,8 @@
-package com.flinkinfo.monitordata.monitor;
+package com.flinkinfo.monitordata.componet.monitor;
 
 
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ public class MonitorManger
 {
     private FileAlterationMonitor monitor;
 
-    private static FileAlterationObserver observer;
+    private FileAlterationObserver observer;
 
     @Value("${monitor.rootdir}")
     String rootDir;
@@ -42,5 +41,10 @@ public class MonitorManger
     public void start() throws Exception
     {
         monitor.start();
+    }
+
+    public void stop() throws Exception
+    {
+        monitor.stop();
     }
 }
