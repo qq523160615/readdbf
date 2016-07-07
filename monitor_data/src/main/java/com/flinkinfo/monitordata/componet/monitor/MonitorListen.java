@@ -98,15 +98,16 @@ public class MonitorListen extends FileAlterationListenerAdaptor
 
                 //保存数据
                 Date date = new Date();
-                if (!((date.getTime() > DateUtil.specialDate("09:00:00").getTime()
-                        && date.getTime() < DateUtil.specialDate("09:15:00").getTime()) ||
-                        (date.getTime() > DateUtil.specialDate("12:45:00").getTime()
-                                && date.getTime() < DateUtil.specialDate("13:00:00").getTime())))
+
+                //在09:00到09:15和12:45到13:00之外时间段发送数据
+                if (!((date.getTime() > DateUtil.specialDate("085900").getTime()
+                        && date.getTime() < DateUtil.specialDate("091500").getTime()) ||
+                        (date.getTime() > DateUtil.specialDate("124400").getTime()
+                                && date.getTime() < DateUtil.specialDate("130000").getTime())))
                 {
                     //获取dbf文件数据
-//                    json = dbfService.readChangeDBF(path);
-                    json = dbfService.readDBF(path);
-                    System.out.println(json);
+                    json = dbfService.readChangeDBF(path);
+//                    json = dbfService.readDBF(path);
                 }
 
                 if (!json.equals(""))

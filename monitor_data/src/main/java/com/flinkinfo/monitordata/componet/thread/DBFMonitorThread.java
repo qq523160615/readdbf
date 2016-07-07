@@ -30,8 +30,8 @@ public class DBFMonitorThread extends Thread
                 TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10), new ThreadPoolExecutor.DiscardOldestPolicy());
         monitorListen.setThreadPoolExecutor(threadPoolExecutor);
 
-        TaskThread taskThread = context.getBean(TaskThread.class);
-        taskThread.start();
+//        TaskThread taskThread = context.getBean(TaskThread.class);
+//        taskThread.start();
     }
 
     @Override

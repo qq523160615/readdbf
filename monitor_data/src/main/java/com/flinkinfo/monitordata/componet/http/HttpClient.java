@@ -40,7 +40,8 @@ public class HttpClient
      */
     public ResponseVO post(RequestVO requestVO, String url) throws Exception
     {
-        System.out.println(JSON.toJSONString(requestVO));
+//        System.out.println(JSON.toJSONString(requestVO));
+        System.out.println(requestVO.getServiceName() + "请求");
         LoggerUtil.info(JSON.toJSONString(requestVO));
 
         ResponseVO responseVO = null;

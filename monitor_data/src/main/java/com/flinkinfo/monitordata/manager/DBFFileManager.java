@@ -41,7 +41,7 @@ public class DBFFileManager
      * @return
      * @throws IOException
      */
-    private DBFFile readDBF(String path) throws IOException
+    private synchronized DBFFile readDBF(String path) throws IOException
     {
         //列名
         List<String> columns = new ArrayList<String>();
@@ -65,8 +65,8 @@ public class DBFFileManager
         //调用DBFReader对实例方法得到path文件中字段的个数
         int fieldsCount = reader.getFieldCount();
 
-        System.out.println("读取dbf文件" + new Date());
-        LoggerUtil.info("读取dbf文件" + new Date());
+        System.out.println("读取dbf文件" + filename + new Date());
+        LoggerUtil.info("读取dbf文件" + filename + new Date());
 
         //取出字段信息
         for (int i = 0; i < fieldsCount; i++)
@@ -81,8 +81,8 @@ public class DBFFileManager
             records.add(rowValues);
         }
 
-        System.out.println("读取dbf文件结束" + new Date());
-        LoggerUtil.info("读取dbf文件结束" + new Date());
+        System.out.println("读取dbf文件结束" + filename + new Date());
+        LoggerUtil.info("读取dbf文件结束" + filename + new Date());
 
         //dbf设置属性
         dbfFile.setColumns(columns);
@@ -227,13 +227,16 @@ public class DBFFileManager
         {
             return "";
         }
+        else if (jsonArray.size() == 1 &&
+                (table.equals("NQXX") || table.equals("NQHQ") || table.equals("NQXYXX")))
+        {
+            return "";
+        }
         else
         {
             return JSON.toJSONString(jsonArray);
         }
     }
-
-
 
 
     /**

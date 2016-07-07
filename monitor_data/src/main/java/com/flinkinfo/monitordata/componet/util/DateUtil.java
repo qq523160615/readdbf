@@ -69,11 +69,13 @@ public class DateUtil
     public static Date specialDate(String time) throws ParseException
     {
         DateFormat format = new SimpleDateFormat("yyyyMMdd");
+        DateFormat format1 = new SimpleDateFormat("yyyyMMdd HHmmss");
         Date nowDate = new Date();
         String date = format.format(nowDate);
         String completeTime = date + " " + time;
-        Date date1 = format.parse(completeTime);
+        Date date1 = format1.parse(completeTime);
 
         return date1;
     }
+
 }
