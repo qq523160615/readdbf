@@ -51,7 +51,7 @@ public class DbOperationManager
         }
 
         createSql = createSql + colum;
-        System.out.println(createSql);
+//        System.out.println(createSql);
         LoggerUtil.info(createSql);
         dbHelper.execute(createSql);
     }
@@ -95,7 +95,7 @@ public class DbOperationManager
     public void delete(String table) throws SQLException
     {
         String deleteSql = "drop table if exists " + table;
-        System.out.println(deleteSql);
+//        System.out.println(deleteSql);
         dbHelper.execute(deleteSql);
     }
 
@@ -108,7 +108,7 @@ public class DbOperationManager
     public void truncate(String table) throws SQLException
     {
         String truncateSql = "truncate table if exists " + table;
-        System.out.println(truncateSql);
+//        System.out.println(truncateSql);
         dbHelper.execute(truncateSql);
     }
 }

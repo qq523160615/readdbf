@@ -39,7 +39,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     public void onFileCreate(File file)
     {
         LoggerUtil.info("[新增]:" + file.getAbsolutePath());
-        System.out.println("[新增]:" + file.getAbsolutePath());
+//        System.out.println("[新增]:" + file.getAbsolutePath());
 //        threadPoolExecutor.execute(new ReadThread(file,new Date()));
 
     }
@@ -48,7 +48,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     public void onFileChange(final File file)
     {
         LoggerUtil.info("[修改]:" + file.getAbsolutePath());
-        System.out.println("[修改]:" + file.getAbsolutePath());
+//        System.out.println("[修改]:" + file.getAbsolutePath());
         threadPoolExecutor.execute(new ReadThread(file, new Date()));
 
     }
@@ -58,7 +58,7 @@ public class MonitorListen extends FileAlterationListenerAdaptor
     public void onFileDelete(File file)
     {
         LoggerUtil.info("[删除]:" + file.getAbsolutePath());
-        System.out.println("[删除]:" + file.getAbsolutePath());
+//        System.out.println("[删除]:" + file.getAbsolutePath());
     }
 
 
@@ -106,8 +106,8 @@ public class MonitorListen extends FileAlterationListenerAdaptor
                                 && date.getTime() < DateUtil.specialDate("130000").getTime())))
                 {
                     //获取dbf文件数据
-                    json = dbfService.readChangeDBF(path);
-//                    json = dbfService.readDBF(path);
+//                    json = dbfService.readChangeDBF(path);
+                    json = dbfService.readDBF(path);
                 }
 
                 if (!json.equals(""))

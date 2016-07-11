@@ -67,7 +67,7 @@ public class ReadBig
                     : inputBuffer.capacity() % BUFFER_SIZE;
 
             result = new String(dst, 0, length);
-            System.out.println(new String(dst, 0, length));// new
+//            System.out.println(new String(dst, 0, length));// new
             // String(dst,0,length)这样可以取出缓存保存的字符串，可以对其进行操作
 
         }

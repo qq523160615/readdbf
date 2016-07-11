@@ -1,6 +1,7 @@
 package com.flinkinfo.monitordata.componet.monitor;
 
 
+import com.flinkinfo.monitordata.componet.util.LoggerUtil;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,8 @@ public class MonitorManger
 
     public void setMonitorListen(MonitorListen monitorListen)
     {
-        System.out.println("监控目录:" + rootDir);
+//        System.out.println("监控目录:" + rootDir);
+        LoggerUtil.info("监控目录:" + rootDir);
         if (observer == null)
         {
             observer = new FileAlterationObserver(rootDir);

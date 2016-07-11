@@ -41,8 +41,8 @@ public class HttpClient
     public ResponseVO post(RequestVO requestVO, String url) throws Exception
     {
 //        System.out.println(JSON.toJSONString(requestVO));
-        System.out.println(requestVO.getServiceName() + "请求");
-        LoggerUtil.info(JSON.toJSONString(requestVO));
+//        System.out.println(requestVO.getServiceName() + "请求");
+        LoggerUtil.info(JSON.toJSONString(requestVO.getServiceName() + "请求"));
 
         ResponseVO responseVO = null;
         RequestBody body = RequestBody.create(JSONMTYPE, JSONObject.toJSONString(requestVO));
@@ -57,7 +57,7 @@ public class HttpClient
         Response response = client.newCall(request).execute();
         String result = response.body().string();
 
-        System.out.println(result);
+//        System.out.println(result);
         LoggerUtil.info(result);
 
         responseVO = JSON.parseObject(result, ResponseVO.class);
@@ -92,7 +92,7 @@ public class HttpClient
 //        if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
         String result = response.body().string();
         ResponseVO responseVO = JSON.parseObject(result, ResponseVO.class);
-        System.out.println(result);
+//        System.out.println(result);
 
         return responseVO;
     }
@@ -116,13 +116,13 @@ public class HttpClient
                 .post(RequestBody.create(MEDIA_TYPE_MARKDOWN, file))
                 .build();
 
-        System.out.println("开始上传文件");
+//        System.out.println("开始上传文件");
         LoggerUtil.info("\"开始上传文件\"");
         Response response = client.newCall(request).execute();
         if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
         String result = response.body().string();
 
-        System.out.println(result);
+//        System.out.println(result);
         LoggerUtil.info(result);
         return new ResponseVO();
     }

@@ -65,7 +65,7 @@ public class DBFFileManager
         //调用DBFReader对实例方法得到path文件中字段的个数
         int fieldsCount = reader.getFieldCount();
 
-        System.out.println("读取dbf文件" + filename + new Date());
+//        System.out.println("读取dbf文件" + filename + new Date());
         LoggerUtil.info("读取dbf文件" + filename + new Date());
 
         //取出字段信息
@@ -81,7 +81,7 @@ public class DBFFileManager
             records.add(rowValues);
         }
 
-        System.out.println("读取dbf文件结束" + filename + new Date());
+//        System.out.println("读取dbf文件结束" + filename + new Date());
         LoggerUtil.info("读取dbf文件结束" + filename + new Date());
 
         //dbf设置属性

@@ -7,7 +7,6 @@ import com.flinkinfo.monitordata.componet.util.LoggerUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +39,7 @@ public class DBFMonitorThread extends Thread
         super.run();
         try
         {
-            System.out.println("开始监控:");
+//            System.out.println("开始监控:");
             LoggerUtil.info("开始监控");
             //设置监控监听器
             monitorManger.setMonitorListen(monitorListen);
@@ -52,7 +51,8 @@ public class DBFMonitorThread extends Thread
         catch (Exception e)
         {
             e.printStackTrace();
-            System.out.println(new Date());
+            LoggerUtil.error(e.getMessage());
+//            System.out.println(new Date());
         }
     }
 }

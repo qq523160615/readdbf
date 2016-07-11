@@ -53,14 +53,14 @@ public class PushServiceImpl implements PushService
      */
     private File writeJsonFile(String json, String table, Date time) throws IOException
     {
-        System.out.println("开始写入文件" + table + new Date());
+//        System.out.println("开始写入文件" + table + new Date());
         LoggerUtil.info("开始写入文件" + table + new Date());
         JSONArray jsonArray = JSON.parseArray(json);
         File file = JsonUtil.writeJosnFile(jsonPath, json, table, time, jsonArray.size());
-        System.out.println("写入文件结束" + table + new Date());
+//        System.out.println("写入文件结束" + table + new Date());
         LoggerUtil.info("写入文件结束" + table + new Date());
 
-        System.out.println("总共写入" + jsonArray.size() + "条记录");
+//        System.out.println("总共写入" + jsonArray.size() + "条记录");
         LoggerUtil.info("总共写入" + jsonArray.size() + "条记录");
 
         return file;
@@ -76,8 +76,8 @@ public class PushServiceImpl implements PushService
         map.put("name", name);
 
         requestVO.setParams(map);
-
         httpClient.post(requestVO, pushUrl);
+
     }
 
 }
